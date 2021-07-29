@@ -9,4 +9,5 @@ target 'PokemonAppSwiftUI' do
 
     pod 'Kingfisher'
     pod 'Alamofire'
+    pod 'PokemonAPI'
 end
