@@ -9,12 +9,28 @@ import SwiftUI
 
 struct HomeRowView: View {
     
-//    var pokemon: Pokemon
+    var text: String = ""
+    
+    init(_ rowItem: RowItem<HomeRowItemType, Pokemon> = .init(type: .noData, value: Pokemon())) {
+        configure(rowItem)
+    }
     
     var body: some View {
-        HStack {
-            Text("")
-            
+        Text("\(text)")
+            .frame(width: 200, height: 50, alignment: .leading)
+            .font(.title)
+    }
+    
+    private mutating func configure(_ item: RowItem<HomeRowItemType, Pokemon>) {
+        switch item.type {
+        case .foundSearchResult:
+            var name = item.value.name
+            name.capitalizeFirstLetter()
+            text = "\(name)"
+        case .noSearchResult:
+            text = "Not found, is this new Pokemon?"
+        case .noData:
+            text = "Sorry, something went wrong."
         }
     }
 }

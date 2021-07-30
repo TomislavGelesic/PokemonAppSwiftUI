@@ -11,43 +11,42 @@ import Alamofire
 import PokemonAPI
 
 class HomeViewModel: ObservableObject {
+    @Published var pokemons: [RowItem<HomeRowItemType, Pokemon>] = [RowItem<HomeRowItemType, Pokemon>(type: .noData, value: Pokemon())]
+    @Published var allPokemons: [RowItem<HomeRowItemType, Pokemon>] = [RowItem<HomeRowItemType, Pokemon>(type: .noData, value: Pokemon())]
     
-    @Published var pokemonList: [Pokemon]?
-    @Published var pokemonDetails: PokemonDetails?
-    
-    init(pokemonList: [Pokemon] = .init()) {
-        self.pokemonList = pokemonList
-    }
-    
-    func fetchPokemonList(_ inputSearch: String) {
+    func fetchPokemonList() {
         RestManager.requestObservable(url: RestEndpoints.pokemonList.endpoint(), dataType: PokemonListResponse.self)
-            .map { result -> [Pokemon]? in
+            .map { [unowned self] result -> [RowItem<HomeRowItemType, Pokemon>] in
                 switch result {
                 case .success(let response):
-                    let t = response.results
-                        .map({ self.createPokemon(from: $0) })
-                        .filter { $0.name.localizedCaseInsensitiveContains(inputSearch) }
-                    return t
+                    return self.createPokemons(from: response)
                 case .failure(_):
-                    return nil
+                    return self.createPokemonsWithNoData()
                 }
             }
-            .assign(to: &$pokemonList)
+            .assign(to: &$allPokemons)
     }
     
-    func fetchDetailsFor(id: Int) {
-        RestManager.requestObservable(url: RestEndpoints.pokemonDetails(id).endpoint(),
-                                      dataType: PokemonDetails.self)
-            .map { result -> PokemonDetails? in
-                switch result {
-                case .success(let details): return details
-                case .failure(_): return nil
-                }
+    func searchPokemonList(_ inputSearch: String) {
+        var filteredList = allPokemons.filter { $0.value.name.localizedCaseInsensitiveContains(inputSearch) }
+        if filteredList.isEmpty {
+            filteredList.append(RowItem<HomeRowItemType, Pokemon>(type: .noSearchResult, value: Pokemon()))
+        }
+        pokemons = filteredList
+    }
+    
+    private func createPokemons(from response: PokemonListResponse) -> [RowItem<HomeRowItemType, Pokemon>] {
+        return response.results
+            .enumerated()
+            .map { (index, responseItem) in
+                RowItem<HomeRowItemType, Pokemon>(type: .foundSearchResult,
+                                                  value: Pokemon(id: index + 1, // Pokemon id starts with 1
+                                                                 name: responseItem.name,
+                                                                 url: responseItem.url))
             }
-            .assign(to: &$pokemonDetails)
     }
     
-    func createPokemon(from responseItem: PokemonItemResponse) -> Pokemon {
-        return Pokemon(id: 1, name: responseItem.name, url: responseItem.url)
+    private func createPokemonsWithNoData() -> [RowItem<HomeRowItemType, Pokemon>] {
+        return [RowItem<HomeRowItemType, Pokemon>(type: .noData, value: Pokemon())]
     }
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PokemonDetails: Codable, Identifiable {
+class PokemonDetails: Codable, Identifiable {
     var id: Int
     var name: String
     var sprites: [String:String]

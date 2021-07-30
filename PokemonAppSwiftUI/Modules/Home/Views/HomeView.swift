@@ -6,36 +6,39 @@
 //
 
 import SwiftUI
-import PokemonAPI
 
 struct HomeView: View {
     
     @ObservedObject var viewModel: HomeViewModel
     @State private var searchInput: String = ""
     
-    init(viewModel: HomeViewModel = HomeViewModel()) {
+    init(viewModel: HomeViewModel = .init()) {
         self.viewModel = viewModel
     }
     
     var body: some View {
-        
         NavigationView {
-            List {
-                SearchView(textInput: $searchInput)
-                    .onChange(of: searchInput, perform: { value in
-                        viewModel.fetchPokemonList(searchInput)
-                    })
-                
-                if let data = viewModel.pokemonList {
-                    ForEach(data, id: \.id) { pokemon in
-                        Text(pokemon.name)
+            GeometryReader { geo in
+                List {
+                    SearchView(textInput: $searchInput)
+                        .onChange(of: searchInput, perform: { value in
+                            viewModel.searchPokemonList(searchInput)
+                        })
+                        .frame(width: geo.size.width * 0.9,
+                               height: 50)
+                    
+                    ForEach(searchInput.isEmpty ? viewModel.allPokemons : viewModel.pokemons, id: \.value.id) { rowItem in
+                        NavigationLink( destination: HomeDetailsView(id: rowItem.value.id)) {
+                            HomeRowView(rowItem)
+                        }
                     }
                 }
-                else {
-                    Text("Sorry, something went wrong")
-                        .frame(width: 200, height: 50, alignment: .center)
-                        .font(.title)
-                }
+                .frame(alignment: .center)
+                .listStyle(PlainListStyle())
+                .navigationBarTitle(Text("I choose you!"), displayMode: .inline)
+                .onAppear(perform: {
+                    viewModel.fetchPokemonList()
+                })
             }
         }
     }
