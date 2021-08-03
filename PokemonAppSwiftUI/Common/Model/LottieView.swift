@@ -11,11 +11,11 @@ import Lottie
 struct LottieView: UIViewRepresentable {
     var name: String
     var loopMode: LottieLoopMode
+    let animationView = AnimationView()
 
     func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
         let view = UIView(frame: .zero)
 
-        let animationView = AnimationView()
         let animation = Animation.named(name)
         animationView.animation = animation
         animationView.contentMode = .scaleAspectFit
@@ -33,5 +33,8 @@ struct LottieView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIViewType, context: Context) {
+    }
+    func startAnimation() {
+        animationView.play()
     }
 }
