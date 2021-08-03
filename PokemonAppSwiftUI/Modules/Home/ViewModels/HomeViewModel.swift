@@ -8,7 +8,6 @@
 import SwiftUI
 import Combine
 import Alamofire
-import PokemonAPI
 
 class HomeViewModel: ObservableObject {
     @Published var pokemons: [RowItem<HomeRowItemType, Pokemon>] = [RowItem<HomeRowItemType, Pokemon>(type: .noData, value: Pokemon())]

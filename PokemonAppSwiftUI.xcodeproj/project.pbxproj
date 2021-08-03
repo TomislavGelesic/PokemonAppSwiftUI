@@ -30,6 +30,9 @@
 		60BFF59626B2D0A40038A0E4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 60BFF59526B2D0A40038A0E4 /* Preview Assets.xcassets */; };
 		60BFF5A826B2DC020038A0E4 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BFF5A726B2DC020038A0E4 /* HomeViewModel.swift */; };
 		60BFF5AC26B2DCF50038A0E4 /* Pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BFF5AB26B2DCF50038A0E4 /* Pokemon.swift */; };
+		60E018DF26B9309500910DBF /* PikachuAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 60E018DE26B9309500910DBF /* PikachuAnimation.json */; };
+		60E018E326B9317100910DBF /* ColorAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 60E018E226B9317100910DBF /* ColorAssets.xcassets */; };
+		C9DB42D6EE94A463B203AF7D /* Pods_PokemonAppSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8E06337C17FD25CFA49A10C /* Pods_PokemonAppSwiftUI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,7 +61,10 @@
 		60BFF59726B2D0A40038A0E4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		60BFF5A726B2DC020038A0E4 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		60BFF5AB26B2DCF50038A0E4 /* Pokemon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon.swift; sourceTree = "<group>"; };
+		60E018DE26B9309500910DBF /* PikachuAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PikachuAnimation.json; sourceTree = "<group>"; };
+		60E018E226B9317100910DBF /* ColorAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ColorAssets.xcassets; sourceTree = "<group>"; };
 		B6F3F32017160CE25F301A6D /* Pods-PokemonAppSwiftUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PokemonAppSwiftUI.debug.xcconfig"; path = "Target Support Files/Pods-PokemonAppSwiftUI/Pods-PokemonAppSwiftUI.debug.xcconfig"; sourceTree = "<group>"; };
+		B8E06337C17FD25CFA49A10C /* Pods_PokemonAppSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PokemonAppSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7651107B82E8E231335E08F /* Pods-PokemonAppSwiftUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PokemonAppSwiftUI.release.xcconfig"; path = "Target Support Files/Pods-PokemonAppSwiftUI/Pods-PokemonAppSwiftUI.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C9DB42D6EE94A463B203AF7D /* Pods_PokemonAppSwiftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +164,7 @@
 				60BFF58D26B2D0A30038A0E4 /* PokemonAppSwiftUI */,
 				60BFF58C26B2D0A30038A0E4 /* Products */,
 				606D8B21FFFB1BF1351DDA29 /* Pods */,
+				BAC76BD5EC21116FCEC09ADE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -200,9 +208,10 @@
 		60BFF5A026B2D4F30038A0E4 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				60BFF59226B2D0A40038A0E4 /* Assets.xcassets */,
+				60E018E126B9315600910DBF /* Assets */,
+				60E018E026B930BE00910DBF /* LaunchScreen */,
+				60E018DD26B9307C00910DBF /* Animations */,
 				60BFF59726B2D0A40038A0E4 /* Info.plist */,
-				603BB2ED26B2F2CE00033457 /* ImageAssets.xcassets */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -266,6 +275,39 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		60E018DD26B9307C00910DBF /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				60E018DE26B9309500910DBF /* PikachuAnimation.json */,
+			);
+			path = Animations;
+			sourceTree = "<group>";
+		};
+		60E018E026B930BE00910DBF /* LaunchScreen */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = LaunchScreen;
+			sourceTree = "<group>";
+		};
+		60E018E126B9315600910DBF /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				603BB2ED26B2F2CE00033457 /* ImageAssets.xcassets */,
+				60BFF59226B2D0A40038A0E4 /* Assets.xcassets */,
+				60E018E226B9317100910DBF /* ColorAssets.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		BAC76BD5EC21116FCEC09ADE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B8E06337C17FD25CFA49A10C /* Pods_PokemonAppSwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -325,9 +367,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60E018E326B9317100910DBF /* ColorAssets.xcassets in Resources */,
 				60BFF59626B2D0A40038A0E4 /* Preview Assets.xcassets in Resources */,
 				60BFF59326B2D0A40038A0E4 /* Assets.xcassets in Resources */,
 				603BB2EE26B2F2CE00033457 /* ImageAssets.xcassets in Resources */,
+				60E018DF26B9309500910DBF /* PikachuAnimation.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
