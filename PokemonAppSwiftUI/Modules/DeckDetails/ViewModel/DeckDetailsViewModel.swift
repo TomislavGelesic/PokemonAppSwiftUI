@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class HomeDetailsViewModel {
+class DeckDetailsViewModel {
     
     @Published var pokemonDetails: PokemonDetails?
     

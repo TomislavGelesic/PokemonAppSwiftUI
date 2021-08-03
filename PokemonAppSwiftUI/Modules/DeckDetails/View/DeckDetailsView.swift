@@ -1,5 +1,5 @@
 //
-//  HomeDetailsView.swift
+//  DeckDetailsView.swift
 //  PokemonAppSwiftUI
 //
 //  Created by Tomislav Gelesic on 30.07.2021..
@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct HomeDetailsView: View {
-    var viewModel: HomeDetailsViewModel
+struct DeckDetailsView: View {
+    var viewModel: DeckDetailsViewModel
     
-    init(id: Int, viewModel: HomeDetailsViewModel? = nil) {
+    init(id: Int, viewModel: DeckDetailsViewModel? = nil) {
         if let vm = viewModel {
             self.viewModel = vm
         } else {
-            self.viewModel = HomeDetailsViewModel(pokemonID: id)
+            self.viewModel = DeckDetailsViewModel(pokemonID: id)
         }
     }
     
@@ -25,8 +25,8 @@ struct HomeDetailsView: View {
     }
 }
 
-struct HomeDetailsView_Previews: PreviewProvider {
+struct DeckDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeDetailsView(id: 1)
+        DeckDetailsView(id: 1)
     }
 }

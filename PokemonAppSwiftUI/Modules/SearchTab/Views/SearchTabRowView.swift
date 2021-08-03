@@ -1,17 +1,11 @@
-//
-//  HomeRowView.swift
-//  PokemonAppSwiftUI
-//
-//  Created by Tomislav Gelesic on 29.07.2021..
-//
 
 import SwiftUI
 
-struct HomeRowView: View {
+struct SearchTabRowView: View {
     
     var text: String = ""
     
-    init(_ rowItem: RowItem<HomeRowItemType, Pokemon> = .init(type: .noData, value: Pokemon())) {
+    init(_ rowItem: RowItem<SearchTabRowItemType, Pokemon> = .init(type: .noData, value: Pokemon())) {
         configure(rowItem)
     }
     
@@ -21,7 +15,7 @@ struct HomeRowView: View {
             .font(.title)
     }
     
-    private mutating func configure(_ item: RowItem<HomeRowItemType, Pokemon>) {
+    private mutating func configure(_ item: RowItem<SearchTabRowItemType, Pokemon>) {
         switch item.type {
         case .foundSearchResult:
             var name = item.value.name
@@ -37,6 +31,6 @@ struct HomeRowView: View {
 
 struct HomeRowView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeRowView()
+        SearchTabRowView()
     }
 }
