@@ -14,6 +14,7 @@ struct InDevelopmentView: View {
             VStack(spacing: 20) {
                 Text("COMING SOON ...")
                     .foregroundColor(.orange)
+                    .font(.system(size: 30))
                 lottieView
                     .onAppear(perform: {
                         lottieView.startAnimation()
