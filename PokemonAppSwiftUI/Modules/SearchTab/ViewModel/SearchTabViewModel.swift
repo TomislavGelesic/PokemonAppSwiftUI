@@ -9,7 +9,7 @@ class SearchTabViewModel: ObservableObject {
     @Published var allPokemons: [RowItem<SearchTabRowItemType, Pokemon>] = [RowItem<SearchTabRowItemType, Pokemon>(type: .noData, value: Pokemon())]
     
     func fetchPokemonList() {
-        RestManager.requestObservable(url: RestEndpoints.pokemonList.endpoint(), dataType: PokemonListResponse.self)
+        RestManager.requestObservable(url: RestEndpoints.pokemonList.endpoint(), dataType: [PokemonItemResponse].self)
             .map { [unowned self] result -> [RowItem<SearchTabRowItemType, Pokemon>] in
                 switch result {
                 case .success(let response):
@@ -29,14 +29,16 @@ class SearchTabViewModel: ObservableObject {
         pokemons = filteredList
     }
     
-    private func createPokemons(from response: PokemonListResponse) -> [RowItem<SearchTabRowItemType, Pokemon>] {
-        return response.results
-            .enumerated()
-            .map { (index, responseItem) in
+    private func createPokemons(from response: [PokemonItemResponse]) -> [RowItem<SearchTabRowItemType, Pokemon>] {
+        return response
+            .map {
                 RowItem<SearchTabRowItemType, Pokemon>(type: .foundSearchResult,
-                                                  value: Pokemon(id: index + 1, // Pokemon id starts with 1
-                                                                 name: responseItem.name,
-                                                                 url: responseItem.url))
+                                                       value: Pokemon(id: $0.id,
+                                                                      name: $0.name.english,
+                                                                      hp: $0.base?.HP ?? 0,
+                                                                      attack: $0.base?.Attack ?? 0,
+                                                                      defense: $0.base?.Defense ?? 0,
+                                                                      imageUrl: $0.imageURL ?? ""))
             }
     }
     

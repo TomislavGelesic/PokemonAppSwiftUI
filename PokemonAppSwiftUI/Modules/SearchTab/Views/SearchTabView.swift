@@ -23,7 +23,9 @@ struct SearchTabView: View {
                     
                     ForEach(searchInput.isEmpty ? viewModel.allPokemons : viewModel.pokemons, id: \.value.id) { rowItem in
                         NavigationLink( destination: DeckDetailsView(id: rowItem.value.id)) {
-                            SearchTabRowView(rowItem)
+                            SearchTabRowView(rowItem,
+                                             width: geo.size.width,
+                                             height: 150)
                         }
                     }
                 }

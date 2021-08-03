@@ -8,22 +8,23 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var selectedTab: Int = 0
+    
     var body: some View {
-        NavigationView {
             TabView {
                 DeckTabView()
                     .tabItem { Image(systemName: "house.fill") }
                 
                 SearchTabView()
-                    .tabItem { Image(systemName: "􀒓") }
+                    .tabItem { Image(systemName: "magnifyingglass.circle.fill") }
                 
                 InDevelopmentView()
                     .tabItem { Image(systemName: "cross.fill") }
                 
                 InDevelopmentView()
-                        .tabItem { Image(systemName: "globe.europe.africa.fill") }
+                        .tabItem { Image(systemName: "globe") }
             }
-        }
+            .accentColor(.orange)
     }
 }
 
