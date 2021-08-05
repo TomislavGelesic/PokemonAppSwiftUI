@@ -3,6 +3,7 @@ import SwiftUI
 
 struct SearchTabRowView: View {
     
+    var id: Int = -1
     var text: String = ""
     var imageURL: String = ""
     var width: CGFloat
@@ -15,14 +16,17 @@ struct SearchTabRowView: View {
     }
     
     var body: some View {
-        HStack(spacing: 20) {
-            NetworkImage(imageURL: URL(string: imageURL), placeholderImage: UIImage(named: "pokeball")!)
-                .frame(width: height - 20, height: height - 20)
-            Text("\(text)")
-                .frame(width: width - 120, alignment: .leading)
-                .font(.title)
+        NavigationLink( destination: DeckDetailsView(id: self.id)) {
+            HStack(spacing: 20) {
+                NetworkImage(imageURL: URL(string: self.imageURL), placeholderImage: UIImage(named: "pokeball")!)
+                    .frame(width: self.height - 20,
+                           height: self.height - 20)
+                Text("\(self.text)")
+                    .frame(width: self.width - 120, alignment: .leading)
+                    .font(.subheadline)
+            }
+            .frame(height: self.height)
         }
-        .frame(height: height)
     }
     
     private mutating func configure(_ item: RowItem<SearchTabRowItemType, Pokemon>) {
