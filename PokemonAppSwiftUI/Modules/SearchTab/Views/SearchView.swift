@@ -11,6 +11,7 @@ struct SearchView: View {
                 Image(systemName: "magnifyingglass")
             }
             .padding()
-            .border(Color.black, width: 1)
+            .overlay(RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.black, lineWidth: 1))
     }
 }

@@ -5,10 +5,31 @@ import Combine
 import Alamofire
 
 class SearchTabViewModel: ObservableObject {
+    
     @Published var pokemons: [RowItem<SearchTabRowItemType, Pokemon>] = [RowItem<SearchTabRowItemType, Pokemon>(type: .noData, value: Pokemon())]
     @Published var allPokemons: [RowItem<SearchTabRowItemType, Pokemon>] = [RowItem<SearchTabRowItemType, Pokemon>(type: .noData, value: Pokemon())]
+    @Published var isLoading: Bool = false
+    var cancellables = Set<AnyCancellable>()
+    
+    init() {
+        subscribeToPublishedData(_allPokemons) { self.isLoading = false }
+        subscribeToPublishedData(_pokemons) { self.isLoading = false }
+    }
+    
+   private func subscribeToPublishedData<T>(_ data: Published<T>, completion: @escaping (()->())) {
+        _allPokemons.projectedValue
+            .receive(on: DispatchQueue.global(qos: .background))
+            .subscribe(on: RunLoop.main)
+            .sink { _ in
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
+            .store(in: &cancellables)
+    }
     
     func fetchPokemonList() {
+        isLoading = true
         RestManager.requestObservable(url: RestEndpoints.pokemonList.endpoint(), dataType: [PokemonItemResponse].self)
             .map { [unowned self] result -> [RowItem<SearchTabRowItemType, Pokemon>] in
                 switch result {

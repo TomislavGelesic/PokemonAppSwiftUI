@@ -21,7 +21,6 @@ public class RestManager {
     }()
     
     static func requestObservable<T: Codable>(url: String, dataType: T.Type) -> AnyPublisher<Result<T, ErrorType>, Never> {
-        print(url)
         return Future<Result<T, ErrorType>, Never> { promise in
             AF.request(url)
                 .validate()
