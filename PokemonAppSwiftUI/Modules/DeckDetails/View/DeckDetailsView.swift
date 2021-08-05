@@ -22,6 +22,7 @@ struct DeckDetailsView: View {
         VStack {
             
         }
+        .navigationTitle(viewModel.pokemonDetails?.name ?? "")
     }
 }
 

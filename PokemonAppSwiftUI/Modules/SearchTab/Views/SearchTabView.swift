@@ -22,9 +22,11 @@ struct SearchTabView: View {
                     ZStack {
                         List {
                             ForEach(searchInput.isEmpty ? viewModel.allPokemons : viewModel.pokemons, id: \.value.id) { rowItem in
-                                SearchTabRowView(rowItem,
-                                                 width: geo.size.width,
-                                                 height: 150)
+                                NavigationLink( destination: DeckDetailsView(id: rowItem.value.id)) {
+                                    SearchTabRowView(rowItem,
+                                                     width: geo.size.width,
+                                                     height: 150)
+                                }
                             }
                         }
                         .navigationBarTitle(Text("Available Pokemons"), displayMode: .inline)

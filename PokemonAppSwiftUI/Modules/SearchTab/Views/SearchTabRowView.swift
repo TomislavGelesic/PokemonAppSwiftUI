@@ -16,7 +16,6 @@ struct SearchTabRowView: View {
     }
     
     var body: some View {
-        NavigationLink( destination: DeckDetailsView(id: self.id)) {
             HStack(spacing: 20) {
                 NetworkImage(imageURL: URL(string: self.imageURL), placeholderImage: UIImage(named: "pokeball")!)
                     .frame(width: self.height - 20,
@@ -26,7 +25,6 @@ struct SearchTabRowView: View {
                     .font(.subheadline)
             }
             .frame(height: self.height)
-        }
     }
     
     private mutating func configure(_ item: RowItem<SearchTabRowItemType, Pokemon>) {
@@ -34,12 +32,12 @@ struct SearchTabRowView: View {
         case .foundSearchResult:
             var name = item.value.name
             name.capitalizeFirstLetter()
-            text = "\(name)"
-            imageURL = item.value.imageUrl
+            self.text = "\(name)"
+            self.imageURL = item.value.imageUrl
         case .noSearchResult:
-            text = "Not found, is this new Pokemon?"
+            self.text = "Not found, is this new Pokemon?"
         case .noData:
-            text = "Sorry, something went wrong."
+            self.text = "Sorry, something went wrong."
         }
     }
 }
