@@ -1,18 +1,12 @@
-//
-//  HomeView.swift
-//  PokemonAppSwiftUI
-//
-//  Created by Tomislav Gelesic on 03.08.2021..
-//
 
 import SwiftUI
 
-struct HomeView: View {
+struct MainView: View {
     @State private var selectedTab: Int = 0
     
     var body: some View {
             TabView {
-                DeckTabView()
+                HomeTabView()
                     .tabItem { Image(systemName: "house.fill") }
                 
                 SearchTabView()
@@ -28,8 +22,3 @@ struct HomeView: View {
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
-    }
-}
