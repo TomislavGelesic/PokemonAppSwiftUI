@@ -5,7 +5,7 @@
 //  Created by Tomislav Gelesic on 30.07.2021..
 //
 
-import Foundation
+import SwiftUI
 
 struct RowItem<RowType, ValueType> : Identifiable {
     var id: UUID = .init()

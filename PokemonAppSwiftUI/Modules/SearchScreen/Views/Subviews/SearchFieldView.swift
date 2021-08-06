@@ -1,7 +1,7 @@
 
 import SwiftUI
 
-struct SearchView: View {
+struct SearchFieldView: View {
     
     @Binding var textInput: String
     
@@ -9,12 +9,13 @@ struct SearchView: View {
             HStack {
                 TextField("Search", text: $textInput)
                 Image(systemName: "magnifyingglass")
+                    .foregroundColor(Color.orange)
             }
             .padding()
             .background(Color.white
                             .opacity(0.95)
                             .cornerRadius(10))
             .overlay(RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.black, lineWidth: 1))
+                        .stroke(Color.orange, lineWidth: 1))
     }
 }

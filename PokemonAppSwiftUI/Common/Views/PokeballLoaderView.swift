@@ -12,14 +12,22 @@ struct PokeballLoaderView: View {
     @State private var angle: Double = 0
     
     var body: some View {
-        Image("pokeball")
-            .resizable()
-            .frame(width: 100, height: 100)
-            .rotationEffect(.degrees(angle))
-            .animation(.interpolatingSpring(mass: 1, stiffness: 10, damping: 1, initialVelocity: 5)
-                        .repeatForever(autoreverses: true),
-                       value: angle)
-            .onAppear(perform:  { angle += 360 })
+        VStack {
+            Spacer()
+            Image("pokeball")
+                .resizable()
+                .frame(width: 100, height: 100)
+                .rotationEffect(.degrees(angle))
+                .animation(.interpolatingSpring(mass: 1, stiffness: 10, damping: 1, initialVelocity: 5)
+                            .repeatForever(autoreverses: true),
+                           value: angle)
+                .onAppear(perform:  { angle += 360 })
+            Spacer()
+            Text("Scanning for available Pokemons...")
+                .frame(alignment: .center)
+                .foregroundColor(.orange)
+            Spacer()
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 
 import SwiftUI
 
-struct SearchTabRowView: View {
+struct SearchTabRowItemView: View {
     
     var id: Int = -1
     var text: String = ""
@@ -44,6 +44,6 @@ struct SearchTabRowView: View {
 
 struct HomeRowView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchTabRowView()
+        SearchTabRowItemView()
     }
 }

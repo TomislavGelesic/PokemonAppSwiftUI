@@ -22,19 +22,22 @@ struct SearchTabView: View {
                     ZStack {
                         List {
                             ForEach(searchInput.isEmpty ? viewModel.allPokemons : viewModel.pokemons, id: \.value.id) { rowItem in
-                                NavigationLink( destination: DeckDetailsView(id: rowItem.value.id)) {
-                                    SearchTabRowView(rowItem,
-                                                     width: geo.size.width,
-                                                     height: 150)
+                                NavigationLink( destination: SearchDetailsView(viewModel: SearchDetailsViewModel(pokemon: rowItem.value))) {
+                                    SearchTabRowItemView(rowItem,
+                                                         width: geo.size.width,
+                                                         height: 150)
                                 }
                             }
                         }
                         .navigationBarTitle(Text("Available Pokemons"), displayMode: .inline)
-                        .onAppear(perform: { viewModel.fetchPokemonList() })
+                        .onAppear(perform: {
+                            searchInput.removeAll()
+                            viewModel.fetchPokemonList()
+                        })
                         
                         VStack {
                             Spacer()
-                            SearchView(textInput: $searchInput)
+                            SearchFieldView(textInput: $searchInput)
                                 .onChange(of: searchInput, perform: { _ in viewModel.searchPokemonList(searchInput) })
                                 .frame(width: geo.size.width * 0.9, height: 50)
                                 .padding(EdgeInsets(top: 0.0, leading: 0.0, bottom: 3.0, trailing: 0.0))
