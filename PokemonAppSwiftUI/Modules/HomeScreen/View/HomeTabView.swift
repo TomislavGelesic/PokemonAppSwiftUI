@@ -7,7 +7,7 @@ struct HomeTabView: View {
         NavigationView {
             GeometryReader { geo in
                 VStack(alignment: .center, spacing: 100) {
-                    NavigationLink(destination: PokeBoxView()) {
+                    NavigationLink(destination: PokeBoxView(viewModel: PokeboxViewModel())) {
                         Text("Visit PokeBox!")
                             .frame(width: 200, height: 44)
                             .foregroundColor(Color.white)

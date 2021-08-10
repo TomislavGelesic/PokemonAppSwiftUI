@@ -40,14 +40,14 @@ class SearchDetailsViewModel {
         case .stats:
             guard let stats = rowItem.value as? SearchDetailsStats else {
                 var view: some View {
-                    SearchDetailsStatsView()
+                    StatsView()
                         .frame(width: width)
                         .multilineTextAlignment(.center)
                 }
                 return AnyView(view)
             }
             var view: some View {
-                SearchDetailsStatsView(attack: "\(stats.attack)", defense: "\(stats.defense)", hp: "\(stats.hp)")
+                StatsView(attack: "\(stats.attack)", defense: "\(stats.defense)", hp: "\(stats.hp)")
                     .frame(width: width)
                     .multilineTextAlignment(.center)
             }

@@ -9,7 +9,7 @@ struct Pokemon: Codable, Identifiable {
     var defense: Int
     var imageUrl: String
     
-    init(id: Int = -1, name: String = "-1", hp: Int = -1, attack: Int = -1, defense: Int = -1, imageUrl: String = "") {
+    init(id: Int = -1, name: String = "unknown", hp: Int = -1, attack: Int = -1, defense: Int = -1, imageUrl: String = "") {
         self.id = id
         self.name = name
         self.hp = hp
