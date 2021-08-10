@@ -3,5 +3,5 @@
 import Foundation
 
 enum SearchDetailsRowType {
-    case image, title, stats, noData
+    case image, name, stats, noData
 }

@@ -6,7 +6,7 @@ struct HomeTabView: View {
     var body: some View {
         NavigationView {
             GeometryReader { geo in
-                VStack(spacing: 50) {
+                VStack(alignment: .center, spacing: 100) {
                     NavigationLink(destination: PokeBoxView()) {
                         Text("Visit PokeBox!")
                             .frame(width: 200, height: 44)
@@ -26,7 +26,7 @@ struct HomeTabView: View {
                             .overlay(RoundedRectangle(cornerRadius: 10)
                                         .stroke(Color.orange, lineWidth: 1))
                     }
-                }
+                }.frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .background(
                 Image("ambient_1")

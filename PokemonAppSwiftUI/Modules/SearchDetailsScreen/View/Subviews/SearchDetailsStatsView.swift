@@ -14,17 +14,19 @@ struct SearchDetailsStatsView: View {
     var body: some View {
         HStack {
             Spacer()
-            VStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 30) {
                 Text("Attack:")
                 Text("Defense:")
                 Text("Health points:")
             }
+            .font(.system(size: 20))
             Spacer()
-            VStack(spacing: 10) {
+            VStack(alignment: .trailing, spacing: 30) {
                 Text(attack)
                 Text(defense)
                 Text(hp)
             }
+            .font(.system(size: 22))
             Spacer()
         }
         .foregroundColor(Color.orange)
