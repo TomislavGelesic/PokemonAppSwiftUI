@@ -4,29 +4,22 @@ import SwiftUI
 struct PokeBoxView: View {
     var viewModel: PokeboxViewModel
     
-    init(viewModel: PokeboxViewModel) {
-        self.viewModel = viewModel
-    }
-    
     var body: some View {
         VStack {
+            Button("Add") {
+                viewModel.addPokemon()
+            }
             Spacer()
             ScrollView(.horizontal) {
                 HStack {
-                    ForEach(viewModel.screenData, id: \.id) { item in
-                        PokeBoxCardView(pokemon: item.value)
+                    ForEach(viewModel.savedPokemons, id: \.self) { savedPokemon in
+                        PokeBoxCardView(pokemon: savedPokemon)
                             .frame(width: 300, height: 400)
                     }
+                    .padding()
                 }
-                .padding()
-            }
+            }.onAppear(perform: viewModel.fetchSavedPokemons)
             Spacer()
         }
-    }
-}
-
-struct PokeBoxView_Previews: PreviewProvider {
-    static var previews: some View {
-        PokeBoxView(viewModel: PokeboxViewModel())
     }
 }

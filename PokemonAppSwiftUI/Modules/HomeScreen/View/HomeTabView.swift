@@ -3,11 +3,16 @@ import SwiftUI
 
 struct HomeTabView: View {
     
+    @EnvironmentObject var databaseManager: PokemonDatabaseManager
+    
     var body: some View {
         NavigationView {
             GeometryReader { geo in
                 VStack(alignment: .center, spacing: 100) {
-                    NavigationLink(destination: PokeBoxView(viewModel: PokeboxViewModel())) {
+                    NavigationLink(destination:
+                                    PokeBoxView(viewModel:
+                                                    PokeboxViewModel(databaseContext: databaseManager.persistentContainer.viewContext)))
+                            {
                         Text("Visit PokeBox!")
                             .frame(width: 200, height: 44)
                             .foregroundColor(Color.white)

@@ -3,13 +3,12 @@ import SwiftUI
 
 @main
 struct PokemonAppSwiftUIApp: App {
-    
-    let persistenceController = PersistenceController.shared
+    @StateObject var pokemonDatabaseManager: PokemonDatabaseManager = .init()
     
     var body: some Scene {
         WindowGroup {
             MainView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(pokemonDatabaseManager)
         }
     }
 }

@@ -11,7 +11,7 @@ class SearchDetailsViewModel {
     
     private func createScreenData(from pokemon: Pokemon) -> [RowItem<SearchDetailsRowType, Any?>] {
         var newScreenData = [RowItem<SearchDetailsRowType, Any?>]()
-        newScreenData.append(.init(id: UUID(), type: .image, value: pokemon.imageUrl))
+        newScreenData.append(.init(id: UUID(), type: .image, value: pokemon.imagePath))
         newScreenData.append(.init(id: UUID(), type: .name, value: pokemon.name))
         newScreenData.append(.init(id: UUID(), type: .stats, value: createSearchDetailsStats(from: pokemon)))
         return newScreenData

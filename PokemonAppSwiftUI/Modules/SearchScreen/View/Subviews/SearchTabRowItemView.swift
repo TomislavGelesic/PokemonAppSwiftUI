@@ -33,7 +33,7 @@ struct SearchTabRowItemView: View {
             var name = item.value.name
             name.capitalizeFirstLetter()
             self.text = "\(name)"
-            self.imageURL = item.value.imageUrl
+            self.imageURL = item.value.imagePath
         case .noSearchResult:
             self.text = "Not found, is this new Pokemon?"
         case .noData:
