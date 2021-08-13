@@ -1,7 +1,7 @@
 import CoreData
 import SwiftUI
 
-class PokeboxViewModel {
+class PokeboxViewModel: ObservableObject {
     var databaseContext: NSManagedObjectContext
     @Published var savedPokemons: [PokemonEntity] = []
     var cnt = 0

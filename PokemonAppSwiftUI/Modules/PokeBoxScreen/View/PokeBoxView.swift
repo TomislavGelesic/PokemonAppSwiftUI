@@ -2,7 +2,7 @@
 import SwiftUI
 
 struct PokeBoxView: View {
-    var viewModel: PokeboxViewModel
+    @StateObject var viewModel: PokeboxViewModel
     
     var body: some View {
         VStack {
@@ -18,7 +18,8 @@ struct PokeBoxView: View {
                     }
                     .padding()
                 }
-            }.onAppear(perform: viewModel.fetchSavedPokemons)
+            }
+            .onAppear(perform: viewModel.fetchSavedPokemons)
             Spacer()
         }
     }
