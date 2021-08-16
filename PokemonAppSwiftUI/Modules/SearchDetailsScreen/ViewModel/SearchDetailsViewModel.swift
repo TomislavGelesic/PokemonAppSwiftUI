@@ -11,7 +11,7 @@ class SearchDetailsViewModel {
     
     private func createScreenData(from pokemon: Pokemon) -> [RowItem<SearchDetailsRowType, Any?>] {
         var newScreenData = [RowItem<SearchDetailsRowType, Any?>]()
-        newScreenData.append(.init(id: UUID(), type: .image, value: pokemon.imageUrl))
+        newScreenData.append(.init(id: UUID(), type: .image, value: pokemon.imagePath))
         newScreenData.append(.init(id: UUID(), type: .name, value: pokemon.name))
         newScreenData.append(.init(id: UUID(), type: .stats, value: createSearchDetailsStats(from: pokemon)))
         return newScreenData
@@ -40,14 +40,14 @@ class SearchDetailsViewModel {
         case .stats:
             guard let stats = rowItem.value as? SearchDetailsStats else {
                 var view: some View {
-                    SearchDetailsStatsView()
+                    StatsView()
                         .frame(width: width)
                         .multilineTextAlignment(.center)
                 }
                 return AnyView(view)
             }
             var view: some View {
-                SearchDetailsStatsView(attack: "\(stats.attack)", defense: "\(stats.defense)", hp: "\(stats.hp)")
+                StatsView(attack: "\(stats.attack)", defense: "\(stats.defense)", hp: "\(stats.hp)")
                     .frame(width: width)
                     .multilineTextAlignment(.center)
             }

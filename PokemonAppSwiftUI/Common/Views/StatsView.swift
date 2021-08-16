@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SearchDetailsStatsView: View {
+struct StatsView: View {
     var attack: String = "undefined"
     var defense: String = "undefined"
     var hp: String = "undefined"

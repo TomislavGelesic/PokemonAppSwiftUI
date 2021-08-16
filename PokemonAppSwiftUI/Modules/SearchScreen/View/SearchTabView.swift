@@ -21,7 +21,7 @@ struct SearchTabView: View {
                 NavigationView {
                     ZStack {
                         List {
-                            ForEach(searchInput.isEmpty ? viewModel.allPokemons : viewModel.pokemons, id: \.value.id) { rowItem in
+                            ForEach(searchInput.isEmpty ? viewModel.allPokemons : viewModel.pokemons, id: \.id) { rowItem in
                                 NavigationLink( destination: SearchDetailsView(viewModel: SearchDetailsViewModel(pokemon: rowItem.value))) {
                                     SearchTabRowItemView(rowItem,
                                                          width: geo.size.width,
