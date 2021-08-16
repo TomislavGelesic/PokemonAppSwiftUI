@@ -1,9 +1,11 @@
+
 import CoreData
 import SwiftUI
 
 class PokeboxViewModel: ObservableObject {
+    
     var databaseContext: NSManagedObjectContext
-    @Published var savedPokemons: [PokemonEntity] = []
+    @Published var savedPokemons: [Pokemon] = []
     var cnt = 0
     
     init(databaseContext: NSManagedObjectContext) {
@@ -12,31 +14,15 @@ class PokeboxViewModel: ObservableObject {
 }
 
 extension PokeboxViewModel {
+    
     func fetchSavedPokemons() {
         let request = NSFetchRequest<PokemonEntity>(entityName: "PokemonEntity")
         do {
-            savedPokemons = try databaseContext.fetch(request)
+            savedPokemons = try databaseContext
+                .fetch(request)
+                .map { PokemonDatabaseManager.createPokemon(from: $0) }
         } catch let error {
             print("Error occured: \(error)")
         }
     }
-    
-    func saveContext() {
-        if databaseContext.hasChanges {
-            do {
-                try databaseContext.save()
-                fetchSavedPokemons()
-            } catch let error {
-                print("error occured: \(error)")
-            }
-        }
-    }
-    
-    func addPokemon() {
-        cnt += 1
-        let pokemon = PokemonEntity(context: databaseContext)
-        pokemon.name = "\(cnt)"
-        saveContext()
-    }
-    
 }
