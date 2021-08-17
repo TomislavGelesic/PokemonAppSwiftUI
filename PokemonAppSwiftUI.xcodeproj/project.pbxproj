@@ -495,8 +495,6 @@
 		60BFF5A326B2D5080038A0E4 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				60BFF5A626B2D5240038A0E4 /* Models */,
-				60BFF5A526B2D5140038A0E4 /* ViewModels */,
 				60BFF5A426B2D50E0038A0E4 /* View */,
 			);
 			path = Main;
@@ -508,20 +506,6 @@
 				6086887C26B93A650007B576 /* HomeView.swift */,
 			);
 			path = View;
-			sourceTree = "<group>";
-		};
-		60BFF5A526B2D5140038A0E4 /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		60BFF5A626B2D5240038A0E4 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		60E018DD26B9307C00910DBF /* Animations */ = {
