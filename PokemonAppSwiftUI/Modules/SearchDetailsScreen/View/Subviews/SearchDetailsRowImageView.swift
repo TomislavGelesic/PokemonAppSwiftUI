@@ -12,6 +12,6 @@ struct SearchDetailsRowImageView: View {
     var imageURL: String
     
     var body: some View {
-        NetworkImage(imageURL: URL(string: imageURL), placeholderImage: UIImage(named: "pokeball")!)
+        NetworkImageView(imageURL: URL(string: imageURL), placeholderImage: UIImage(named: "pokeball")!)
     }
 }

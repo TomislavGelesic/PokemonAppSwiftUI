@@ -17,7 +17,7 @@ struct SearchTabRowItemView: View {
     
     var body: some View {
             HStack(spacing: 20) {
-                NetworkImage(imageURL: URL(string: self.imageURL), placeholderImage: UIImage(named: "pokeball")!)
+                NetworkImageView(imageURL: URL(string: self.imageURL), placeholderImage: UIImage(named: "pokeball")!)
                     .frame(width: self.height - 20,
                            height: self.height - 20)
                 Text("\(self.text)")

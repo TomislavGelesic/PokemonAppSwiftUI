@@ -10,7 +10,7 @@ struct PokemonPickerGalleryCardView: View {
     var body: some View {
         GeometryReader{ geo in
             VStack(alignment: .center, spacing: 10) {
-                NetworkImage(imageURL: URL(string: pokemon.imagePath), placeholderImage: UIImage(named: "pokeball")!)
+                NetworkImageView(imageURL: URL(string: pokemon.imagePath), placeholderImage: UIImage(named: "pokeball")!)
                     .frame(width: geo.size.width * 0.8, height: geo.size.width * 0.8)
                 Text("\(pokemon.name)")
                     .foregroundColor(.orange)

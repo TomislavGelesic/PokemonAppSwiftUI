@@ -2,6 +2,12 @@
 
 import Foundation
 
+/*
+ 
+ DATA SOURCE INFO LINK:   https://purukitto.github.io/pokemon-api/
+
+ */
+
 public enum RestEndpoints {
     case pokemonList
     case pokemonDetails(Int)

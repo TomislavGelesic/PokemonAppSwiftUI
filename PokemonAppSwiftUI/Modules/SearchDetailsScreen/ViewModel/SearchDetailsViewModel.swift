@@ -32,7 +32,7 @@ class SearchDetailsViewModel {
         switch rowItem.type {
         case .image:
             var view: some View {
-                NetworkImage(imageURL: URL(string: rowItem.value as? String ?? ""),
+                NetworkImageView(imageURL: URL(string: rowItem.value as? String ?? ""),
                              placeholderImage: UIImage(named: "pokeball")!)
                     .frame(width: width * 2/3, height: width * 2/3, alignment: .center)
             }

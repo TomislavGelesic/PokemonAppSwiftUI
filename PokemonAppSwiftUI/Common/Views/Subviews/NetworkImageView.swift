@@ -1,15 +1,9 @@
-//
-//  NetworkImage.swift
-//  NewsReaderSwiftUI
-//
-//  Created by Tomislav Gelesic on 24.07.2021..
-//
 
 import SwiftUI
 import Kingfisher
 import UIKit
 
-public struct NetworkImage: SwiftUI.View {
+public struct NetworkImageView: SwiftUI.View {
     
     // swiftlint:disable:next redundant_optional_initialization
     @State private var image: UIImage? = nil
@@ -44,7 +38,7 @@ public struct NetworkImage: SwiftUI.View {
 
 struct NetworkImage_Previews: PreviewProvider {
     static var previews: some SwiftUI.View {
-        NetworkImage(imageURL: URL(string: "https://www.apple.com/favicon.ico")!,
+        NetworkImageView(imageURL: URL(string: "https://www.apple.com/favicon.ico")!,
                      placeholderImage: UIImage(systemName: "bookmark")!)
     }
 }

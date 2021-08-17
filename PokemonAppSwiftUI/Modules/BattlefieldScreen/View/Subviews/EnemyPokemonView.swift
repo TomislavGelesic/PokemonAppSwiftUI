@@ -7,7 +7,7 @@ struct EnemyPokemonView: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            NetworkImage(imageURL: URL(string: pokemon.imagePath), placeholderImage: UIImage(named: "pokeball")!)
+            NetworkImageView(imageURL: URL(string: pokemon.imagePath), placeholderImage: UIImage(named: "pokeball")!)
                 .frame(width: 100, height: 100)
             Text(pokemon.name)
         }

@@ -159,6 +159,36 @@ extension BattleFieldViewModel {
         return pokemonPoints > enemyPoints ? true : false
     }
     
+    private func didPikachuWin(pokemon: Pokemon, enemy: Pokemon) -> Bool {
+        var pokemonHP = pokemon.hp
+        var enemyHP = enemy.hp
+        var enemyDefense = 0
+        var pokemonDefense = 0
+        
+        if Bool.random() {
+            enemyDefense = 0
+        }
+        else {
+            while enemyDefense >= 0 && pokemonDefense >= 0 {
+                enemyDefense -= pokemon.attack/10
+                pokemonDefense = enemy.attack/10
+            }
+        }
+        if Bool.random() {
+            enemyHP = 0
+        }
+        else {
+            while enemyHP >= 0 && pokemonHP >= 0 {
+                enemyHP = pokemon.attack/10
+                pokemonHP = enemy.attack/10
+            }
+        }
+        
+        let pokemonPoints = (pokemonDefense * 100) + (pokemonHP * 10)
+        let enemyPoints = (enemyDefense * 100) + (enemyHP * 10)
+        return pokemonPoints > enemyPoints ? true : false
+    }
+    
     private func saveNewPokemon(pokemon: Pokemon) {
         _ = PokemonDatabaseManager.createPokemonEntity(from: pokemon, inContext: databaseContext)
         saveContext()
