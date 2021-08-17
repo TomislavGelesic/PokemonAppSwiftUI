@@ -11,12 +11,19 @@ struct BattlefieldView: View {
             ZStack{
                 Image(viewModel.backgroundImageName)
                     .resizable()
+                    .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
                     .scaledToFill()
                 
-                VStack(spacing: 20) {
-                    viewModel.createView(for: .enemyPokemons)
-                    viewModel.createView(for: .availablePokemons)
+                VStack() {
+                    Spacer()
+                    viewModel.createView(for: .enemyPokemons,
+                                         contentWidth: geo.size.width * 0.9)
+                    Spacer()
+                    viewModel.createView(for: .availablePokemons,
+                                         contentWidth: geo.size.width * 0.9)
+                    Spacer()
                 }
+                .padding()
             }
         }
     }

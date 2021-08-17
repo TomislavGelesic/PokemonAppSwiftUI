@@ -24,6 +24,7 @@ public struct NetworkImage: SwiftUI.View {
             .onAppear(perform: loadImage)
             .transition(.opacity)
             .id(image ?? placeholderImage)
+            .cornerRadius(5.0)
     }
     
     private func loadImage() {

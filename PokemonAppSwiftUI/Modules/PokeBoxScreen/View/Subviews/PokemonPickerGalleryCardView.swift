@@ -1,7 +1,7 @@
 
 import SwiftUI
 
-struct PokeBoxCardView: View {
+struct PokemonPickerGalleryCardView: View {
     
     var shouldShowStats: Bool
     var pokemon: Pokemon
@@ -9,16 +9,18 @@ struct PokeBoxCardView: View {
     
     var body: some View {
         GeometryReader{ geo in
-            VStack(alignment: .center, spacing: 30) {
+            VStack(alignment: .center, spacing: 10) {
                 NetworkImage(imageURL: URL(string: pokemon.imagePath), placeholderImage: UIImage(named: "pokeball")!)
-                    .frame(width: geo.size.width * 0.7, height: geo.size.width * 0.7)
+                    .frame(width: geo.size.width * 0.8, height: geo.size.width * 0.8)
                 Text("\(pokemon.name)")
                     .foregroundColor(.orange)
                     .font(.system(size: 24))
+                    .lineLimit(2)
                 if shouldShowStats {
                     StatsView(attack: "\(pokemon.attack)",
                               defense: "\(pokemon.defense)",
                               hp: "\(pokemon.hp)")
+                        .frame(width: geo.size.width * 0.8)
                 }
             }
             .padding()

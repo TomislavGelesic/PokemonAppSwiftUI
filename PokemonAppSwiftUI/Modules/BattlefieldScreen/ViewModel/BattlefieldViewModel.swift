@@ -23,22 +23,31 @@ class BattleFieldViewModel: ObservableObject {
 
 extension BattleFieldViewModel {
     
-    func createView(for type: BattlefieldViewRowItemType) -> AnyView {
+    func createView(for type: BattlefieldViewRowItemType, contentWidth width: CGFloat) -> AnyView {
         let filteredData = screenData.filter { $0.type == type }
         for item in filteredData {
             switch item.type {
             case .availablePokemons:
                 guard let availablePokemons = item.value as? [Pokemon] else { return AnyView(EmptyView()) }
                 var view: some View {
-                    PokemonPickerGallery(shouldShowStats: false, isSelectable: true, pokemons: availablePokemons) { [unowned self] selectedIndex in
-                        self.selectedPokemon = availablePokemons[selectedIndex]
-                    }
+                    PokemonPickerGalleryView(contentWidth: width,
+                                             shouldShowStats: false,
+                                             isSelectable: true,
+                                             pokemons: availablePokemons,
+                                             onSelection:
+                                                { [unowned self] selectedIndex in
+                                                    self.selectedPokemon = availablePokemons[selectedIndex]
+                                                })
                 }
                 return AnyView(view)
             case .enemyPokemons:
                 guard let enemyPokemons = item.value as? [Pokemon] else { return AnyView(EmptyView()) }
                 var view: some View {
-                    PokemonPickerGallery(shouldShowStats: false, isSelectable: true, pokemons: enemyPokemons) { [unowned self] selectedIndex in
+                    PokemonPickerGalleryView(contentWidth: width,
+                                             shouldShowStats: false,
+                                             isSelectable: true,
+                                             pokemons: enemyPokemons)
+                    { [unowned self] selectedIndex in
                         self.selectedEnemyPokemon = enemyPokemons[selectedIndex]
                     }
                 }
@@ -109,7 +118,9 @@ extension BattleFieldViewModel {
     private func fetchSavedPokemons() -> RowItem<BattlefieldViewRowItemType, Any>? {
         let request = NSFetchRequest<PokemonEntity>(entityName: "PokemonEntity")
         do {
-            let savedPokemons = try databaseContext.fetch(request)
+            let savedPokemons = try databaseContext
+                .fetch(request)
+                .map{ PokemonDatabaseManager.createPokemon(from: $0) }
             return RowItem<BattlefieldViewRowItemType, Any>(type: .availablePokemons, value: savedPokemons)
         } catch let error {
             print("Error occured: \(error)")

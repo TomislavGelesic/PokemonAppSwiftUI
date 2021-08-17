@@ -29,6 +29,7 @@ struct StatsView: View {
             .font(.system(size: 22))
             Spacer()
         }
+        .lineLimit(2)
         .foregroundColor(Color.orange)
     }
 }
