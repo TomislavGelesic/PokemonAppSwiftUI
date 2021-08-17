@@ -15,13 +15,26 @@ struct BattlefieldView: View {
                     .scaledToFill()
                 
                 VStack() {
-                    Spacer()
+                    Text("WILD POKEMONS")
+                        .font(.title)
+                        .foregroundColor(Color("ThemeForegroundColor"))
+                    
                     viewModel.createView(for: .enemyPokemons,
-                                         contentWidth: geo.size.width * 0.9)
+                                         contentWidth: geo.size.width * 0.3)
+                    Divider()
                     Spacer()
+                    Text("YOUR POKEMONS")
+                        .font(.title)
+                        .foregroundColor(Color("ThemeForegroundColor"))
                     viewModel.createView(for: .availablePokemons,
-                                         contentWidth: geo.size.width * 0.9)
+                                         contentWidth: geo.size.width * 0.3)
+                    Divider()
                     Spacer()
+                    Button(action: {
+                        //impl fight result scenario
+                    }, label: {
+                        PokemonTextView(text: "Fight")
+                    })
                 }
                 .padding()
             }

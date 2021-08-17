@@ -1,9 +1,3 @@
-//
-//  SearchDetailsStatsView.swift
-//  PokemonAppSwiftUI
-//
-//  Created by Tomislav Gelesic on 06.08.2021..
-//
 
 import SwiftUI
 
@@ -14,14 +8,14 @@ struct StatsView: View {
     var body: some View {
         HStack {
             Spacer()
-            VStack(alignment: .leading, spacing: 30) {
+            VStack(alignment: .leading, spacing: 10) {
                 Text("Attack:")
                 Text("Defense:")
                 Text("Health points:")
             }
             .font(.system(size: 20))
             Spacer()
-            VStack(alignment: .trailing, spacing: 30) {
+            VStack(alignment: .trailing, spacing: 10) {
                 Text(attack)
                 Text(defense)
                 Text(hp)
@@ -30,6 +24,7 @@ struct StatsView: View {
             Spacer()
         }
         .lineLimit(2)
-        .foregroundColor(Color.orange)
+        .foregroundColor(Color("ThemeForegroundColor"))
+        .padding()
     }
 }

@@ -6,7 +6,6 @@ import Combine
 class BattleFieldViewModel: ObservableObject {
     
     let backgroundImageName: String = "battlefield_backgroundImage"
-    let instructionText: String = "Tap on pokemon to fight him!"
     var databaseContext: NSManagedObjectContext
     @Published var screenData: [RowItem<BattlefieldViewRowItemType, Any>] = .init()
     @Published var isLoading: Bool = false
@@ -36,7 +35,8 @@ extension BattleFieldViewModel {
                                              pokemons: availablePokemons,
                                              onSelection:
                                                 { [unowned self] selectedIndex in
-                                                    self.selectedPokemon = availablePokemons[selectedIndex]
+                                                    if selectedIndex < 0 { self.selectedPokemon = nil }
+                                                    else { self.selectedPokemon = availablePokemons[selectedIndex] }
                                                 })
                 }
                 return AnyView(view)
@@ -46,10 +46,12 @@ extension BattleFieldViewModel {
                     PokemonPickerGalleryView(contentWidth: width,
                                              shouldShowStats: false,
                                              isSelectable: true,
-                                             pokemons: enemyPokemons)
-                    { [unowned self] selectedIndex in
-                        self.selectedEnemyPokemon = enemyPokemons[selectedIndex]
-                    }
+                                             pokemons: enemyPokemons,
+                                             onSelection:
+                                                { [unowned self] selectedIndex in                                                    
+                                                    if selectedIndex < 0 { self.selectedEnemyPokemon = nil }
+                                                    else { self.selectedEnemyPokemon = enemyPokemons[selectedIndex] }
+                                                })
                 }
                 return AnyView(view)
             }

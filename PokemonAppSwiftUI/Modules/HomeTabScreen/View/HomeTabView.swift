@@ -26,10 +26,8 @@ struct HomeTabView: View {
             .background(
                 Image("ambient_1")
                     .resizable()
-                    .scaledToFill()
-                    .ignoresSafeArea())
-            .navigationBarTitle(Text(""), displayMode: .inline)
-            
+                    .scaledToFill())
+            .navigationBarTitle(Text(""), displayMode: .inline)            
         }
     }
 }

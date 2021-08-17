@@ -5,7 +5,6 @@ import UIKit
 
 public struct NetworkImageView: SwiftUI.View {
     
-    // swiftlint:disable:next redundant_optional_initialization
     @State private var image: UIImage? = nil
     
     public let imageURL: URL?

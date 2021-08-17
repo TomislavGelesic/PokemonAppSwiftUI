@@ -17,7 +17,7 @@ struct MainView: View {
             InDevelopmentView()
                 .tabItem { Image(systemName: "globe") }
         }
-        .accentColor(.orange)
+        .accentColor(Color("ThemeForegroundColor"))
     }
 }
 

@@ -13,7 +13,7 @@ struct InDevelopmentView: View {
     var body: some View {
         VStack(spacing: 20) {
             Text("COMING SOON ...")
-                .foregroundColor(.orange)
+                .foregroundColor(Color("ThemeForegroundColor"))
                 .font(.system(size: 30))
             lottieView
                 .onAppear(perform: {

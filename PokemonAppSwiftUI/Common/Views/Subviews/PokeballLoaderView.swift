@@ -25,7 +25,7 @@ struct PokeballLoaderView: View {
             Spacer()
             Text("Scanning for available Pokemons...")
                 .frame(alignment: .center)
-                .foregroundColor(.orange)
+                .foregroundColor(Color("ThemeForegroundColor"))
             Spacer()
         }
     }

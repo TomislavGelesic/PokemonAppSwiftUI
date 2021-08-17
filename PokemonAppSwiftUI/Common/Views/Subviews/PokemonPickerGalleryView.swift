@@ -2,7 +2,6 @@
 import SwiftUI
 
 struct PokemonPickerGalleryView: View {
-    
     var contentWidth: CGFloat = 150.0
     var shouldShowStats: Bool = true
     var isSelectable: Bool
@@ -20,7 +19,12 @@ struct PokemonPickerGalleryView: View {
                         .frame(width: contentWidth)
                         .onTapGesture {
                             if isSelectable {
-                                selectedIndex = i
+                                if selectedIndex == i {
+                                    selectedIndex = -1
+                                }
+                                else {
+                                    selectedIndex = i
+                                }
                                 onSelection(selectedIndex)
                             }
                         }

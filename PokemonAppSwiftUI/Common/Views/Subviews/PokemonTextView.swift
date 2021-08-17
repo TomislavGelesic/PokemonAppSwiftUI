@@ -7,10 +7,10 @@ struct PokemonTextView: View {
     var body: some View {
         Text(text)
             .frame(width: 200, height: 44)
-            .foregroundColor(Color.white)
-            .background(Color.orange)
+            .foregroundColor(Color("ThemeForegroundColor"))
+            .background(Color("ThemeBackgroundColor"))
             .cornerRadius(10)
             .overlay(RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.orange, lineWidth: 1))
+                        .stroke(Color("ThemeForegroundColor"), lineWidth: 3))
     }
 }
