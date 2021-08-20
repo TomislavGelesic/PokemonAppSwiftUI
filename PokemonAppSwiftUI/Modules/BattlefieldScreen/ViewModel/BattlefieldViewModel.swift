@@ -9,9 +9,12 @@ class BattleFieldViewModel: ObservableObject {
     var databaseContext: NSManagedObjectContext
     @Published var screenData: [RowItem<BattlefieldViewRowItemType, Any>] = .init()
     @Published var isLoading: Bool = false
+    @Published var isShowingError: Bool = false
+    @Published var canFight: Bool = false
     
-    @State private var selectedPokemon: Pokemon? = nil
-    @State private var selectedEnemyPokemon: Pokemon? = nil
+    private var selectedPokemon: Pokemon? = nil
+    private var selectedEnemyPokemon: Pokemon? = nil
+    var battleResult: BattleResult? = nil
     
     init(databaseContext: NSManagedObjectContext) {
         self.databaseContext = databaseContext
@@ -27,7 +30,9 @@ extension BattleFieldViewModel {
         for item in filteredData {
             switch item.type {
             case .availablePokemons:
-                guard let availablePokemons = item.value as? [Pokemon] else { return AnyView(EmptyView()) }
+                guard let availablePokemons = item.value as? [Pokemon],
+                      !availablePokemons.isEmpty else { return AnyView(EmptyView()) }
+                selectedPokemon = availablePokemons.first!
                 var view: some View {
                     PokemonPickerGalleryView(contentWidth: width,
                                              shouldShowStats: false,
@@ -37,6 +42,13 @@ extension BattleFieldViewModel {
                                                 { [unowned self] selectedIndex in
                                                     if selectedIndex < 0 { self.selectedPokemon = nil }
                                                     else { self.selectedPokemon = availablePokemons[selectedIndex] }
+                                                    if selectedEnemyPokemon != nil,
+                                                       selectedPokemon != nil {
+                                                        canFight = true
+                                                    }
+                                                    else {
+                                                        canFight = false
+                                                    }
                                                 })
                 }
                 return AnyView(view)
@@ -48,9 +60,16 @@ extension BattleFieldViewModel {
                                              isSelectable: true,
                                              pokemons: enemyPokemons,
                                              onSelection:
-                                                { [unowned self] selectedIndex in                                                    
+                                                { [unowned self] selectedIndex in   
                                                     if selectedIndex < 0 { self.selectedEnemyPokemon = nil }
                                                     else { self.selectedEnemyPokemon = enemyPokemons[selectedIndex] }
+                                                    if selectedEnemyPokemon != nil,
+                                                       selectedPokemon != nil {
+                                                        canFight = true
+                                                    }
+                                                    else {
+                                                        canFight = false
+                                                    }
                                                 })
                 }
                 return AnyView(view)
@@ -72,6 +91,7 @@ extension BattleFieldViewModel {
                     newScreenData.append(enemyPokemons)
                     newScreenData.append(savedPokemons)
                 }
+                self.isLoading = false
                 return newScreenData
             }
             .assign(to: &$screenData)
@@ -141,58 +161,92 @@ extension BattleFieldViewModel {
         }
     }
     
+    private func saveNewPokemon(pokemon: Pokemon) {
+        _ = PokemonDatabaseManager.createPokemonEntity(from: pokemon, inContext: databaseContext)
+        saveContext()
+    }
+}
+
+extension BattleFieldViewModel {
+    
+    func getBattleResultForSelectedPokemons() -> BattleResult {
+        if let pokemon = selectedPokemon,
+           let enemy = selectedEnemyPokemon {
+            if didWin(pokemon: pokemon, enemy: enemy) {
+                saveNewPokemon(pokemon: enemy)
+                return BattleResult(pokemon: pokemon,
+                                    enemyPokemon: enemy,
+                                    didWin: true)
+            }
+            else {
+                return BattleResult(pokemon: pokemon,
+                                    enemyPokemon: enemy,
+                                    didWin: false)
+            }
+        }
+        else {
+            isShowingError = true
+            return BattleResult()
+        }
+    }
+    
     private func didWin(pokemon: Pokemon, enemy: Pokemon) -> Bool {
+        
+        if pokemon.id == 25 { return didPikachuWin(pokemon: pokemon, enemy: enemy) }
+        
         var pokemonHP = pokemon.hp
         var enemyHP = enemy.hp
-        var enemyDefense = 0
-        var pokemonDefense = 0
+        var enemyDefense = enemy.defense
+        var pokemonDefense = pokemon.defense
         
-        while enemyDefense >= 0 && pokemonDefense >= 0 {
+        while enemyDefense > 0 && pokemonDefense > 0 {
             enemyDefense -= pokemon.attack/10
-            pokemonDefense = enemy.attack/10
+            pokemonDefense -= enemy.attack/10
         }
-        while enemyHP >= 0 && pokemonHP >= 0 {
-            enemyHP = pokemon.attack/10
-            pokemonHP = enemy.attack/10
+        while enemyHP > 0 && pokemonHP > 0 {
+            enemyHP -= pokemon.attack/10
+            pokemonHP -= enemy.attack/10
         }
         
-        let pokemonPoints = (pokemonDefense * 100) + (pokemonHP * 10)
-        let enemyPoints = (enemyDefense * 100) + (enemyHP * 10)
+        let pokemonPoints = calculatePoints(remainingDefense: pokemonDefense, remainingHP: pokemonHP)
+        let enemyPoints = calculatePoints(remainingDefense: enemyDefense, remainingHP: enemyHP)
         return pokemonPoints > enemyPoints ? true : false
     }
     
     private func didPikachuWin(pokemon: Pokemon, enemy: Pokemon) -> Bool {
         var pokemonHP = pokemon.hp
         var enemyHP = enemy.hp
-        var enemyDefense = 0
-        var pokemonDefense = 0
+        var enemyDefense = enemy.defense
+        var pokemonDefense = pokemon.defense
         
         if Bool.random() {
-            enemyDefense = 0
+            enemyDefense /= 2
         }
-        else {
-            while enemyDefense >= 0 && pokemonDefense >= 0 {
-                enemyDefense -= pokemon.attack/10
-                pokemonDefense = enemy.attack/10
-            }
-        }
-        if Bool.random() {
-            enemyHP = 0
-        }
-        else {
-            while enemyHP >= 0 && pokemonHP >= 0 {
-                enemyHP = pokemon.attack/10
-                pokemonHP = enemy.attack/10
-            }
+        while enemyDefense > 0 && pokemonDefense > 0 {
+            enemyDefense -= pokemon.attack/10
+            pokemonDefense -= enemy.attack/10
         }
         
-        let pokemonPoints = (pokemonDefense * 100) + (pokemonHP * 10)
-        let enemyPoints = (enemyDefense * 100) + (enemyHP * 10)
+        if Bool.random() {
+            enemyHP /= 2
+        }
+        while enemyHP > 0 && pokemonHP > 0 {
+            enemyHP -= pokemon.attack/10
+            pokemonHP -= enemy.attack/10
+            
+        }
+        
+        let pokemonPoints = calculatePoints(remainingDefense: pokemonDefense, remainingHP: pokemonHP)
+        let enemyPoints = calculatePoints(remainingDefense: enemyDefense, remainingHP: enemyHP)
         return pokemonPoints > enemyPoints ? true : false
     }
     
-    private func saveNewPokemon(pokemon: Pokemon) {
-        _ = PokemonDatabaseManager.createPokemonEntity(from: pokemon, inContext: databaseContext)
-        saveContext()
+    private func getPositiveOrZero(_ number: Int) -> Int {
+        if number < 0 { return 0 }
+        return number
+    }
+    
+    private func calculatePoints(remainingDefense defense: Int, remainingHP hp: Int) -> Int {
+        return (getPositiveOrZero(defense) * 100) + (getPositiveOrZero(hp) * 10)
     }
 }

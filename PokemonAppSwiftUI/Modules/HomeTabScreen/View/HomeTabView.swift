@@ -12,13 +12,13 @@ struct HomeTabView: View {
                     NavigationLink(
                         destination: PokeBoxView(viewModel: PokeboxViewModel(databaseContext: databaseManager.persistentContainer.viewContext)),
                         label: {
-                            PokemonTextView(text: "Visit PokeBox!")
+                            PokemonTextView("Visit PokeBox!")
                         })
                     
                     NavigationLink(
                         destination: BattlefieldView(viewModel: BattleFieldViewModel(databaseContext: databaseManager.persistentContainer.viewContext)),
                         label: {
-                            PokemonTextView(text: "Catch new Pokemon!")
+                            PokemonTextView("Catch new Pokemon!")
                         })
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

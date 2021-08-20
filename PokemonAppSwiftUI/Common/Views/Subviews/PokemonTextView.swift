@@ -4,6 +4,11 @@ import SwiftUI
 
 struct PokemonTextView: View {
     var text: String
+    
+    init(_ text: String) {
+        self.text = text
+    }
+    
     var body: some View {
         Text(text)
             .frame(width: 200, height: 44)

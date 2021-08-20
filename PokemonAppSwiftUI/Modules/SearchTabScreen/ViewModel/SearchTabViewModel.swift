@@ -16,7 +16,7 @@ class SearchTabViewModel: ObservableObject {
         subscribeToPublishedData(_pokemons) { self.isLoading = false }
     }
     
-   private func subscribeToPublishedData<T>(_ data: Published<T>, completion: @escaping (()->())) {
+    private func subscribeToPublishedData<T>(_ data: Published<T>, completion: @escaping (()->())) {
         _allPokemons.projectedValue
             .receive(on: DispatchQueue.global(qos: .background))
             .subscribe(on: RunLoop.main)
