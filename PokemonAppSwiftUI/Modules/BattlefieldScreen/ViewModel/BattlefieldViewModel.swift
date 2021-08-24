@@ -3,106 +3,104 @@ import SwiftUI
 import CoreData
 import Combine
 
+
+
 class BattleFieldViewModel: ObservableObject {
     
-    let backgroundImageName: String = "battlefield_backgroundImage"
     var databaseContext: NSManagedObjectContext
-    @Published var screenData: [RowItem<BattlefieldViewRowItemType, Any>] = .init()
-    @Published var isLoading: Bool = false
-    @Published var isShowingError: Bool = false
-    @Published var canFight: Bool = false
     
-    private var selectedPokemon: Pokemon? = nil
-    private var selectedEnemyPokemon: Pokemon? = nil
-    var battleResult: BattleResult? = nil
+    @Published var state: BattlefieldState = .init()
+    
+    private let eventSubject = CurrentValueSubject<BattlefieldEvent, Never>(.onAppear)
+    private let fetchScreenDataSubject = PassthroughSubject<Void, Never>()
+    private var disposeBag = Set<AnyCancellable>()
     
     init(databaseContext: NSManagedObjectContext) {
         self.databaseContext = databaseContext
-        self.createScreenData()
+        initializeEventSubject(eventSubject)
+        initializeFetchScreenDataSubject(fetchScreenDataSubject)
+        fetchScreenDataSubject.send()
     }
     
 }
 
 extension BattleFieldViewModel {
     
-    func createView(for type: BattlefieldViewRowItemType, contentWidth width: CGFloat) -> AnyView {
-        let filteredData = screenData.filter { $0.type == type }
-        for item in filteredData {
-            switch item.type {
-            case .availablePokemons:
-                guard let availablePokemons = item.value as? [Pokemon],
-                      !availablePokemons.isEmpty else { return AnyView(EmptyView()) }
-                selectedPokemon = availablePokemons.first!
-                var view: some View {
-                    PokemonPickerGalleryView(contentWidth: width,
-                                             shouldShowStats: false,
-                                             isSelectable: true,
-                                             pokemons: availablePokemons,
-                                             onSelection:
-                                                { [unowned self] selectedIndex in
-                                                    if selectedIndex < 0 { self.selectedPokemon = nil }
-                                                    else { self.selectedPokemon = availablePokemons[selectedIndex] }
-                                                    if selectedEnemyPokemon != nil,
-                                                       selectedPokemon != nil {
-                                                        canFight = true
-                                                    }
-                                                    else {
-                                                        canFight = false
-                                                    }
-                                                })
+    private func initializeEventSubject(_ subject: CurrentValueSubject<BattlefieldEvent, Never>) {
+        return subject
+            .map { event in self.reduce(&self.state, event) }
+            .receive(on: RunLoop.main)
+            .assign(to: &$state)
+    }
+    
+    func sendEvent(_ event: BattlefieldEvent) {
+        eventSubject.send(event)
+    }
+    
+    private func reduce(_ state: inout BattlefieldState, _ event: BattlefieldEvent) -> BattlefieldState {
+        switch state.status {
+        case .idle:
+            switch event {
+            case .onAppear:
+                state.status = .loading
+            case .onOccuredError(let error):
+                state.status = .error(error)
+            case .onSelectPokemon(let selectedPokemonType, let pokemon):
+                switch selectedPokemonType {
+                case .availablePokemons: state.selectedPokemon = pokemon
+                case .enemyPokemons: state.selectedEnemyPokemon = pokemon
+                default: state.status = .error(.recoverable())
                 }
-                return AnyView(view)
-            case .enemyPokemons:
-                guard let enemyPokemons = item.value as? [Pokemon] else { return AnyView(EmptyView()) }
-                var view: some View {
-                    PokemonPickerGalleryView(contentWidth: width,
-                                             shouldShowStats: false,
-                                             isSelectable: true,
-                                             pokemons: enemyPokemons,
-                                             onSelection:
-                                                { [unowned self] selectedIndex in   
-                                                    if selectedIndex < 0 { self.selectedEnemyPokemon = nil }
-                                                    else { self.selectedEnemyPokemon = enemyPokemons[selectedIndex] }
-                                                    if selectedEnemyPokemon != nil,
-                                                       selectedPokemon != nil {
-                                                        canFight = true
-                                                    }
-                                                    else {
-                                                        canFight = false
-                                                    }
-                                                })
-                }
-                return AnyView(view)
+                state.status = .idle
+            case .onShowFightResults:
+                state.battleResult = getBattleResultForSelectedPokemons()
+            default: break
+            }
+        case .loading:
+            switch event {
+            case .onOccuredError(let error):
+                state.status = .error(error)
+            case .onFinishedLoading(let newScreenData):
+                state.selectedPokemon = nil
+                state.selectedEnemyPokemon = nil
+                state.screenData = newScreenData
+                state.status = .idle
+            default: break
+            }
+        case .error(_):
+            switch event {
+            case .onDismissError:
+                state.status = .loading
+            default: break
             }
         }
-        return AnyView(EmptyView())
+        return state
     }
 }
 
+
 extension BattleFieldViewModel {
     
-    private func createScreenData() {
-        isLoading = true
-        enemyPokemonsPipeline()
-            .map { [unowned self] enemyPokemons in
-                var newScreenData = [RowItem<BattlefieldViewRowItemType, Any>]()
-                if let enemyPokemons = enemyPokemons,
-                   let savedPokemons = self.fetchSavedPokemons() {
-                    newScreenData.append(enemyPokemons)
-                    newScreenData.append(savedPokemons)
-                }
-                self.isLoading = false
-                return newScreenData
+    private func initializeFetchScreenDataSubject(_ subject: PassthroughSubject<Void, Never>) {
+        subject
+            .flatMap { [unowned self] (_) -> AnyPublisher<RowItem<BattlefieldRowItemType, Any>?, Never> in
+                self.fetchWildPokemons()
             }
-            .assign(to: &$screenData)
+            .map { [unowned self] wildPokemons -> [RowItem<BattlefieldRowItemType, Any>] in
+                return self.createScreenData(wildPokemons: wildPokemons, availablePokemons: self.fetchSavedPokemons())
+            }
+            .sink { [unowned self] newScreenData in
+                self.sendEvent(.onFinishedLoading(newScreenData))
+            }
+            .store(in: &disposeBag)
     }
     
-    private func enemyPokemonsPipeline() -> AnyPublisher<RowItem<BattlefieldViewRowItemType, Any>?, Never> {
+    private func fetchWildPokemons() -> AnyPublisher<RowItem<BattlefieldRowItemType, Any>?, Never> {
         return Publishers
             .Zip3(RestManager.requestObservable(url: RestEndpoints.randomPokemon.endpoint(), dataType: PokemonItemResponse.self),
                   RestManager.requestObservable(url: RestEndpoints.randomPokemon.endpoint(), dataType: PokemonItemResponse.self),
                   RestManager.requestObservable(url: RestEndpoints.randomPokemon.endpoint(), dataType: PokemonItemResponse.self))
-            .flatMap { [unowned self] (result1, result2, result3) -> AnyPublisher<RowItem<BattlefieldViewRowItemType, Any>?, Never> in
+            .flatMap { [unowned self] (result1, result2, result3) -> AnyPublisher<RowItem<BattlefieldRowItemType, Any>?, Never> in
                 var enemyPokemons = [Pokemon]()
                 switch result1 {
                 case .success(let responseData1):
@@ -122,9 +120,23 @@ extension BattleFieldViewModel {
                 case .failure(_):
                     return Just(nil).eraseToAnyPublisher()
                 }
-                let item: RowItem<BattlefieldViewRowItemType, Any>? = .init(type: .enemyPokemons, value: enemyPokemons)
+                let item: RowItem<BattlefieldRowItemType, Any>? = .init(type: .enemyPokemons, value: enemyPokemons)
                 return Just(item).eraseToAnyPublisher()
-            }.eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
+    }
+    
+    private func createScreenData(wildPokemons: RowItem<BattlefieldRowItemType, Any>?, availablePokemons: RowItem<BattlefieldRowItemType, Any>?) -> [RowItem<BattlefieldRowItemType, Any>] {
+        var newScreenData = [RowItem<BattlefieldRowItemType, Any>]()
+        if let wildPokemons = wildPokemons,
+           let availablePokemons = availablePokemons {
+            newScreenData.append(wildPokemons)
+            newScreenData.append(availablePokemons)
+        }
+        else {
+            newScreenData.append(RowItem<BattlefieldRowItemType, Any>(type: .empty, value: "No available Pokemons"))
+        }
+        return newScreenData
     }
     
     private func createPokemon(from response: PokemonItemResponse) -> Pokemon {
@@ -137,13 +149,13 @@ extension BattleFieldViewModel {
         
     }
     
-    private func fetchSavedPokemons() -> RowItem<BattlefieldViewRowItemType, Any>? {
+    private func fetchSavedPokemons() -> RowItem<BattlefieldRowItemType, Any>? {
         let request = NSFetchRequest<PokemonEntity>(entityName: "PokemonEntity")
         do {
             let savedPokemons = try databaseContext
                 .fetch(request)
                 .map{ PokemonDatabaseManager.createPokemon(from: $0) }
-            return RowItem<BattlefieldViewRowItemType, Any>(type: .availablePokemons, value: savedPokemons)
+            return RowItem<BattlefieldRowItemType, Any>(type: .availablePokemons, value: savedPokemons)
         } catch let error {
             print("Error occured: \(error)")
         }
@@ -154,7 +166,6 @@ extension BattleFieldViewModel {
         if databaseContext.hasChanges {
             do {
                 try databaseContext.save()
-                createScreenData()
             } catch let error {
                 print("error occured: \(error)")
             }
@@ -169,25 +180,16 @@ extension BattleFieldViewModel {
 
 extension BattleFieldViewModel {
     
-    func getBattleResultForSelectedPokemons() -> BattleResult {
-        if let pokemon = selectedPokemon,
-           let enemy = selectedEnemyPokemon {
+    func getBattleResultForSelectedPokemons() -> BattleResult? {
+        if let pokemon = state.selectedPokemon,
+           let enemy = state.selectedEnemyPokemon {
             if didWin(pokemon: pokemon, enemy: enemy) {
                 saveNewPokemon(pokemon: enemy)
-                return BattleResult(pokemon: pokemon,
-                                    enemyPokemon: enemy,
-                                    didWin: true)
+                return BattleResult(pokemon: pokemon, enemyPokemon: enemy, didWin: true)
             }
-            else {
-                return BattleResult(pokemon: pokemon,
-                                    enemyPokemon: enemy,
-                                    didWin: false)
-            }
+            return BattleResult(pokemon: pokemon, enemyPokemon: enemy, didWin: false)
         }
-        else {
-            isShowingError = true
-            return BattleResult()
-        }
+        return nil
     }
     
     private func didWin(pokemon: Pokemon, enemy: Pokemon) -> Bool {

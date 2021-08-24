@@ -8,7 +8,7 @@
 import Foundation
 
 enum ErrorType: Error {
-    case noInternet
-    case general
-    case recoverable
+    case noInternet(String = "No internet")
+    case general(String = "Something went wrong, please report!")
+    case recoverable(String = "Ooops, something went wrong...")
 }

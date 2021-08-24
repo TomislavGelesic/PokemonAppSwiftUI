@@ -4,59 +4,132 @@ import SwiftUI
 
 struct BattlefieldView: View {
     
-    var viewModel: BattleFieldViewModel
+    let backgroundImageName: String = "battlefield_backgroundImage"
+    @StateObject var viewModel: BattleFieldViewModel
     @State private var isShowingBattleResult: Bool = false
+    @State private var fightButtonText: String = "Select Pokemons"
     
     var body: some View {
-        GeometryReader { geo in
-            ZStack{
-                Image(viewModel.backgroundImageName)
-                    .resizable()
-                    .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
-                    .scaledToFill()
-                    .opacity(viewModel.isShowingError || viewModel.isLoading ? 0.4 : 1)
-                    .blur(radius: viewModel.isShowingError || viewModel.isLoading ? 30 : 0)
-                
-                VStack() {
-                    Text("WILD POKEMONS")
-                        .font(.title)
-                        .foregroundColor(Color("ThemeForegroundColor"))
-                    
-                    viewModel.createView(for: .enemyPokemons,
-                                         contentWidth: geo.size.width * 0.3)
-                    Divider()
-                    Spacer()
-                    Text("YOUR POKEMONS")
-                        .font(.title)
-                        .foregroundColor(Color("ThemeForegroundColor"))
-                    viewModel.createView(for: .availablePokemons,
-                                         contentWidth: geo.size.width * 0.3)
-                    Divider()
-                    Spacer()
-                    Button(action: {
-                        if viewModel.canFight {
-                            isShowingBattleResult = true
+        createView(state: viewModel.state)
+    }
+    
+    private func createView(state: BattlefieldState) -> AnyView {
+        switch state.status {
+        case .idle:
+            var view: some View {
+                GeometryReader { geo in
+                    ZStack{
+                        Image(backgroundImageName)
+                            .resizable()
+                            .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
+                            .scaledToFill()
+                        
+                        VStack() {
+                            Text("WILD POKEMONS")
+                                .font(.title)
+                                .foregroundColor(Color("ThemeForegroundColor"))
+                            createPokemonPickerGalleryView(state: viewModel.state,
+                                                           pokemonType: .enemyPokemons,
+                                                           contentWidth: geo.size.width * 0.3)
+                            Divider()
+                            Spacer()
+                            Text("YOUR POKEMONS")
+                                .font(.title)
+                                .foregroundColor(Color("ThemeForegroundColor"))
+                            createPokemonPickerGalleryView(state: viewModel.state,
+                                                           pokemonType: .availablePokemons,
+                                                           contentWidth: geo.size.width * 0.3)
+                            Divider()
+                            Spacer()
+                            Button(action: {
+                                if viewModel.state.canFight() {
+                                    viewModel.sendEvent(.onShowFightResults)
+                                    isShowingBattleResult = true
+                                }
+                            },
+                            label: { PokemonTextView(fightButtonText) })
+                            .sheet(isPresented: $isShowingBattleResult, content: {
+                                BattleResultView(viewModel: BattleResultViewModel(viewModel.state.battleResult))
+                            })
+                            .onDisappear(perform: {
+                                isShowingBattleResult = false
+                            })
                         }
-                    }, label: {
-                        PokemonTextView(viewModel.canFight ? "Fight" : "SelectPokemons")
-                    })
-                    .sheet(isPresented: $isShowingBattleResult, content: {
-                        BattleResultView(viewModel: BattleResultViewModel(viewModel.battleResult))
-                    })
-                    .onDisappear(perform: {
-                        isShowingBattleResult = false
-                    })
+                        .padding()
+                    }
                 }
-                .padding()
-                .opacity(viewModel.isShowingError || viewModel.isLoading ? 0.0 : 1.0)
-                
-                ErrorView(errorType: .recoverable)
-                    .opacity(viewModel.isShowingError ? 1.0 : 0.0)
-                
+            }
+            return AnyView(view)
+        case .loading:
+            var view: some View {
                 PokeballLoaderView()
-                    .opacity(viewModel.isLoading ? 1.0 : 0.0)
+            }
+            return AnyView(view)
+        case .error(let errorType):
+            var view: some View {
+                ErrorView(errorType: errorType)
+            }
+            return AnyView(view)
+        }
+    }
+    
+    private func createPokemonPickerGalleryView(state: BattlefieldState, pokemonType type: BattlefieldRowItemType, contentWidth width: CGFloat) -> AnyView {
+        let filteredData = state.screenData.filter { $0.type == type }
+        for item in filteredData {
+            switch item.type {
+            case .availablePokemons:
+                guard let availablePokemons = item.value as? [Pokemon],
+                      !availablePokemons.isEmpty
+                else {
+                    viewModel.sendEvent(.onOccuredError(.recoverable()))
+                    return AnyView(EmptyView())
+                }
+                var view: some View {
+                    PokemonPickerGalleryView(contentWidth: width,
+                                             shouldShowStats: false,
+                                             isSelectable: true,
+                                             pokemons: availablePokemons,
+                                             onSelection: { index in
+                                                viewModel.state.selectedPokemon = nil
+                                                if index >= 0 {
+                                                    viewModel.sendEvent(.onSelectPokemon(item.type, availablePokemons[index]))
+                                                }
+                                                if viewModel.state.canFight() { fightButtonText = "Fight" }
+                                                else { fightButtonText = "Select Pokemon" }
+                                             })
+                    
+                }
+                return AnyView(view)
+            case .enemyPokemons:
+                guard let enemyPokemons = item.value as? [Pokemon]
+                else {
+                    viewModel.sendEvent(.onOccuredError(.recoverable()))
+                    return AnyView(EmptyView())
+                }
+                var view: some View {
+                    PokemonPickerGalleryView(contentWidth: width,
+                                             shouldShowStats: false,
+                                             isSelectable: true,
+                                             pokemons: enemyPokemons,
+                                             onSelection: { index in
+                                                viewModel.state.selectedEnemyPokemon = nil
+                                                if index >= 0 {
+                                                    viewModel.sendEvent(.onSelectPokemon(item.type, enemyPokemons[index]))
+                                                }
+                                                if viewModel.state.canFight() { fightButtonText = "Fight" }
+                                                else { fightButtonText = "Select Pokemon" }
+                                             })
+                }
+                return AnyView(view)
+            case .empty:
+                var view: some View {
+                    Text(item.value as? String ?? "No data.")
+                }
+                return AnyView(view)
             }
         }
+        viewModel.sendEvent(.onOccuredError(.recoverable()))
+        return AnyView(EmptyView())
     }
 }
 

@@ -33,9 +33,9 @@ struct ErrorView: View {
 struct ErrorView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ErrorView(errorType: .general)
-            ErrorView(errorType: .noInternet)
-            ErrorView(errorType: .recoverable)
+            ErrorView(errorType: .general())
+            ErrorView(errorType: .noInternet())
+            ErrorView(errorType: .recoverable())
         }
     }
 }

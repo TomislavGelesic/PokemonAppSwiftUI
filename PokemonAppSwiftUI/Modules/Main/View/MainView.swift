@@ -18,6 +18,6 @@ struct MainView: View {
                 .tabItem { Image(systemName: "globe") }
         }
         .accentColor(Color("ThemeForegroundColor"))
-    }
+    }    
 }
 
