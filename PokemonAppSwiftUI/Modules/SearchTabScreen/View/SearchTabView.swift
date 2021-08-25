@@ -10,7 +10,8 @@ struct SearchTabView: View {
     
     init(viewModel: SearchTabViewModel = .init()) {
         self.viewModel = viewModel
-        UINavigationBar.changeAppearance(clear: true)
+        UINavigationBar.appearance().barTintColor = .clear
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
     }
     #warning("navigation bar items cannot be centered? \n- custom navigationview?")
     var body: some View {
@@ -45,18 +46,20 @@ struct SearchTabView: View {
                                                     .background(Color("ThemeBackgroundColor")
                                                                     .opacity(0.95)
                                                                     .cornerRadius(10))
+                                                    .frame(width: geo.size.width * 0.8)
                                                     .padding()
                                                     .onChange(of: searchInput,
                                                               perform: { _ in
                                                                 viewModel.searchPokemonList(searchInput)
                                                               })
                                             }
-                                            .frame(minWidth: 100, maxWidth: geo.size.width)
-                    )                }
+                    )
+                }
                 .opacity(viewModel.isLoading ? 0.4 : 1)
                 .blur(radius: viewModel.isLoading ? 30 : 0)
             }
         }
+        .ignoresSafeArea(edges: [.leading, .trailing, .bottom])
     }
 }
 

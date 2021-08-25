@@ -8,6 +8,7 @@ struct BattlefieldView: View {
     @StateObject var viewModel: BattleFieldViewModel
     @State private var isShowingBattleResult: Bool = false
     @State private var fightButtonText: String = "Select Pokemons"
+    @State private var lightningAnimationFinished: Bool = false
     
     var body: some View {
         createView(state: viewModel.state)
@@ -45,13 +46,27 @@ struct BattlefieldView: View {
                                 action: {
                                     viewModel.sendEvent(.onShowFightResults)
                                     isShowingBattleResult = true
+                                    lightningAnimationFinished = false
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                        lightningAnimationFinished = true
+                                    }
                                 },
                                 label: { PokemonTextView(fightButtonText) })
                                 .sheet(isPresented: $isShowingBattleResult, content: {
-                                    BattleResultView(viewModel: BattleResultViewModel(viewModel.state.battleResult, onDismiss: {
-                                        viewModel.sendEvent(.onAppear)
-                                        isShowingBattleResult = false
-                                    }))
+                                    withAnimation(.easeIn(duration: 5.0)) {
+                                        ZStack {
+                                            LottieView(animationJsonFileName: "lightningAnimation", loopMode: .loop)
+                                                .background(Color.black)
+                                                .opacity(lightningAnimationFinished ? 0.0 : 1.0)
+                                            
+                                            BattleResultView(viewModel: BattleResultViewModel(viewModel.state.battleResult, onDismiss: {
+                                                viewModel.sendEvent(.onAppear)
+                                                isShowingBattleResult = false
+                                            }))
+                                            .opacity(lightningAnimationFinished ? 1.0 : 0.0)
+                                            
+                                        }
+                                    }
                                 })
                                 .disabled(!viewModel.state.canFight())
                         }

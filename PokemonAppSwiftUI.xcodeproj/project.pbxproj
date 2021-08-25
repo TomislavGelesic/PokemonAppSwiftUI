@@ -11,6 +11,7 @@
 		601CFA4726CFB6230075CE5C /* BattleResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601CFA4626CFB6230075CE5C /* BattleResultViewModel.swift */; };
 		601CFA4926CFB9850075CE5C /* BattleResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 601CFA4826CFB9850075CE5C /* BattleResult.swift */; };
 		6027BF4826C6A19600047EAB /* PokemonDatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6027BF4726C6A19600047EAB /* PokemonDatabaseManager.swift */; };
+		6028D05726D665EB0044A4EA /* lightningAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 6028D05626D665EB0044A4EA /* lightningAnimation.json */; };
 		603BB2DC26B2E64200033457 /* SerializationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603BB2D626B2E64200033457 /* SerializationManager.swift */; };
 		603BB2DD26B2E64200033457 /* RestManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603BB2D726B2E64200033457 /* RestManager.swift */; };
 		603BB2DE26B2E64200033457 /* RestEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 603BB2D926B2E64200033457 /* RestEndpoints.swift */; };
@@ -68,6 +69,7 @@
 		601CFA4626CFB6230075CE5C /* BattleResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BattleResultViewModel.swift; sourceTree = "<group>"; };
 		601CFA4826CFB9850075CE5C /* BattleResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BattleResult.swift; sourceTree = "<group>"; };
 		6027BF4726C6A19600047EAB /* PokemonDatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonDatabaseManager.swift; sourceTree = "<group>"; };
+		6028D05626D665EB0044A4EA /* lightningAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = lightningAnimation.json; sourceTree = "<group>"; };
 		603BB2D626B2E64200033457 /* SerializationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SerializationManager.swift; sourceTree = "<group>"; };
 		603BB2D726B2E64200033457 /* RestManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestManager.swift; sourceTree = "<group>"; };
 		603BB2D926B2E64200033457 /* RestEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestEndpoints.swift; sourceTree = "<group>"; };
@@ -521,6 +523,7 @@
 		60E018DD26B9307C00910DBF /* Animations */ = {
 			isa = PBXGroup;
 			children = (
+				6028D05626D665EB0044A4EA /* lightningAnimation.json */,
 				60E018DE26B9309500910DBF /* PikachuAnimation.json */,
 			);
 			path = Animations;
@@ -606,6 +609,7 @@
 				60BFF59626B2D0A40038A0E4 /* Preview Assets.xcassets in Resources */,
 				60BFF59326B2D0A40038A0E4 /* Assets.xcassets in Resources */,
 				603BB2EE26B2F2CE00033457 /* ImageAssets.xcassets in Resources */,
+				6028D05726D665EB0044A4EA /* lightningAnimation.json in Resources */,
 				60E018DF26B9309500910DBF /* PikachuAnimation.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,7 +9,7 @@ import SwiftUI
 import Lottie
 
 struct InDevelopmentView: View {
-    let lottieView: LottieView = LottieView(name: "PikachuAnimation", loopMode: .loop)
+    let lottieView: LottieView = LottieView(animationJsonFileName: "PikachuAnimation", loopMode: .loop)
     var body: some View {
         VStack(spacing: 20) {
             Text("COMING SOON ...")

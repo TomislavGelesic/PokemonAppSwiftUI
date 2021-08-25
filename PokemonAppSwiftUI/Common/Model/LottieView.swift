@@ -9,14 +9,14 @@ import SwiftUI
 import Lottie
 
 struct LottieView: UIViewRepresentable {
-    var name: String
+    var animationJsonFileName: String
     var loopMode: LottieLoopMode
     let animationView = AnimationView()
 
     func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
         let view = UIView(frame: .zero)
 
-        let animation = Animation.named(name)
+        let animation = Animation.named(animationJsonFileName)
         animationView.animation = animation
         animationView.contentMode = .scaleAspectFit
         animationView.loopMode = loopMode
