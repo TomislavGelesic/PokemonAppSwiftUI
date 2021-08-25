@@ -14,7 +14,7 @@ struct MainView: View {
             InDevelopmentView()
                 .tabItem { Image(systemName: "cross.fill") }
             
-            InDevelopmentView()
+            PokepediaView()
                 .tabItem { Image(systemName: "globe") }
         }
         .accentColor(Color("ThemeForegroundColor"))

@@ -42,10 +42,8 @@ struct BattlefieldView: View {
                             Divider()
                             Spacer()
                             Button(action: {
-                                if viewModel.state.canFight() {
                                     viewModel.sendEvent(.onShowFightResults)
                                     isShowingBattleResult = true
-                                }
                             },
                             label: { PokemonTextView(fightButtonText) })
                             .sheet(isPresented: $isShowingBattleResult, content: {
@@ -54,6 +52,7 @@ struct BattlefieldView: View {
                             .onDisappear(perform: {
                                 isShowingBattleResult = false
                             })
+                            .disabled(!viewModel.state.canFight())
                         }
                         .padding()
                     }

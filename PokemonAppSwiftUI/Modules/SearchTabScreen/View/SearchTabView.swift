@@ -10,8 +10,9 @@ struct SearchTabView: View {
     
     init(viewModel: SearchTabViewModel = .init()) {
         self.viewModel = viewModel
+        UINavigationBar.changeAppearance(clear: true)
     }
-    
+    #warning("navigation bar items cannot be centered? \n- custom navigationview?")
     var body: some View {
         GeometryReader { geo in
             ZStack {
@@ -19,43 +20,39 @@ struct SearchTabView: View {
                     .opacity(viewModel.isLoading ? 1 : 0)
                 
                 NavigationView {
-                    ZStack {
-                        List {
-                            ForEach(searchInput.isEmpty ? viewModel.allPokemons : viewModel.pokemons, id: \.id) { rowItem in
-                                ZStack {
-                                    NavigationLink( destination: SearchDetailsView(pokemon: rowItem.value)) { }
-                                        .hidden()
-                                    SearchTabRowItemView(rowItem)
-                                        .frame(height: 150)
-                                        .foregroundColor(Color("ThemeForegroundColor"))
-                                        .background(Color("ThemeBackgroundColor")
-                                                        .opacity(0.95)
-                                                        .cornerRadius(10))
-                                }
+                    List {
+                        ForEach(searchInput.isEmpty ? viewModel.allPokemons : viewModel.pokemons, id: \.id) { rowItem in
+                            ZStack {
+                                NavigationLink( destination: SearchDetailsView(pokemon: rowItem.value)) { }
+                                    .hidden()
+                                SearchTabRowItemView(rowItem)
+                                    .frame(height: 150)
+                                    .foregroundColor(Color("ThemeForegroundColor"))
+                                    .background(Color("ThemeBackgroundColor")
+                                                    .opacity(0.95)
+                                                    .cornerRadius(10))
                             }
                         }
-                        .navigationBarTitle(Text("Available Pokemons"), displayMode: .inline)
-                        .onAppear(perform: {
-                            searchInput.removeAll()
-                            viewModel.fetchPokemonList()
-                        })
-                        
-                        VStack {
-                            Spacer()
-                            SearchFieldView(textInput: $searchInput)
-                                .foregroundColor(Color("ThemeForegroundColor"))
-                                .background(Color("ThemeBackgroundColor")
-                                                .opacity(0.95)
-                                                .cornerRadius(10))
-                                .frame(width: geo.size.width * 0.9, height: 50)
-                                .padding(EdgeInsets(top: 0.0, leading: 0.0, bottom: 3.0, trailing: 0.0))
-                                .onChange(of: searchInput,
-                                          perform: { _ in
-                                            viewModel.searchPokemonList(searchInput)
-                                          })
-                        }
                     }
-                }
+                    .onAppear(perform: {
+                        searchInput.removeAll()
+                        viewModel.fetchPokemonList()
+                    })
+                    .navigationBarItems(leading:
+                                            HStack(alignment: .center) {
+                                                SearchFieldView(textInput: $searchInput)
+                                                    .foregroundColor(Color("ThemeForegroundColor"))
+                                                    .background(Color("ThemeBackgroundColor")
+                                                                    .opacity(0.95)
+                                                                    .cornerRadius(10))
+                                                    .padding()
+                                                    .onChange(of: searchInput,
+                                                              perform: { _ in
+                                                                viewModel.searchPokemonList(searchInput)
+                                                              })
+                                            }
+                                            .frame(minWidth: 100, maxWidth: geo.size.width)
+                    )                }
                 .opacity(viewModel.isLoading ? 0.4 : 1)
                 .blur(radius: viewModel.isLoading ? 30 : 0)
             }
