@@ -14,11 +14,12 @@ class PokemonDatabaseManager: ObservableObject {
     
     func save(pokemon: Pokemon) {
         if let savedItems = PokemonDatabaseManager.fetchSavedPokemons(databaseContext: persistentContainer.viewContext),
-           !savedItems.contains(where: { $0.id == pokemon.id }) {
+           !savedItems.contains(where: { $0.name == pokemon.name }) {
             let _ = PokemonDatabaseManager.createPokemonEntity(from: pokemon, inContext: persistentContainer.viewContext)
             saveContext()
         }
     }
+    
     private func saveContext() {
         let context = persistentContainer.viewContext
         if context.hasChanges {

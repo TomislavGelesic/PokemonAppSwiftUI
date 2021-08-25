@@ -3,8 +3,6 @@ import SwiftUI
 import CoreData
 import Combine
 
-
-
 class BattleFieldViewModel: ObservableObject {
     
     var databaseContext: NSManagedObjectContext
@@ -19,7 +17,7 @@ class BattleFieldViewModel: ObservableObject {
         self.databaseContext = databaseContext
         initializeEventSubject(eventSubject)
         initializeFetchScreenDataSubject(fetchScreenDataSubject)
-        fetchScreenDataSubject.send()
+        refreshScreenData()
     }
     
 }
@@ -43,6 +41,7 @@ extension BattleFieldViewModel {
             switch event {
             case .onAppear:
                 state.status = .loading
+                refreshScreenData()
             case .onOccuredError(let error):
                 state.status = .error(error)
             case .onSelectPokemon(let selectedPokemonType, let pokemon):
@@ -93,6 +92,10 @@ extension BattleFieldViewModel {
                 self.sendEvent(.onFinishedLoading(newScreenData))
             }
             .store(in: &disposeBag)
+    }
+    
+    private func refreshScreenData() {
+        fetchScreenDataSubject.send()
     }
     
     private func fetchWildPokemons() -> AnyPublisher<RowItem<BattlefieldRowItemType, Any>?, Never> {
@@ -173,8 +176,11 @@ extension BattleFieldViewModel {
     }
     
     private func saveNewPokemon(pokemon: Pokemon) {
-        _ = PokemonDatabaseManager.createPokemonEntity(from: pokemon, inContext: databaseContext)
-        saveContext()
+        if let savedItems = PokemonDatabaseManager.fetchSavedPokemons(databaseContext: databaseContext),
+           !savedItems.contains(where: { $0.name == pokemon.name }) {
+            let _ = PokemonDatabaseManager.createPokemonEntity(from: pokemon, inContext: databaseContext)
+            saveContext()
+        }
     }
 }
 

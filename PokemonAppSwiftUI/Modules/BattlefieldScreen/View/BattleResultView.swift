@@ -45,6 +45,7 @@ extension BattleResultView {
                                     color: result.didWin ? .green : .red)
                         Spacer()
                         Button(action: {
+                            viewModel.onDismiss()
                             presentationMode.wrappedValue.dismiss()
                         }, label: {
                             PokemonTextView("OK")

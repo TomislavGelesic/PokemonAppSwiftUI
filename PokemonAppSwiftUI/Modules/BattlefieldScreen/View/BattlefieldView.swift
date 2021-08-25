@@ -41,18 +41,19 @@ struct BattlefieldView: View {
                                                            contentWidth: geo.size.width * 0.3)
                             Divider()
                             Spacer()
-                            Button(action: {
+                            Button(
+                                action: {
                                     viewModel.sendEvent(.onShowFightResults)
                                     isShowingBattleResult = true
-                            },
-                            label: { PokemonTextView(fightButtonText) })
-                            .sheet(isPresented: $isShowingBattleResult, content: {
-                                BattleResultView(viewModel: BattleResultViewModel(viewModel.state.battleResult))
-                            })
-                            .onDisappear(perform: {
-                                isShowingBattleResult = false
-                            })
-                            .disabled(!viewModel.state.canFight())
+                                },
+                                label: { PokemonTextView(fightButtonText) })
+                                .sheet(isPresented: $isShowingBattleResult, content: {
+                                    BattleResultView(viewModel: BattleResultViewModel(viewModel.state.battleResult, onDismiss: {
+                                        viewModel.sendEvent(.onAppear)
+                                        isShowingBattleResult = false
+                                    }))
+                                })
+                                .disabled(!viewModel.state.canFight())
                         }
                         .padding()
                     }
